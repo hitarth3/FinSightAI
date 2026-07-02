@@ -1,0 +1,399 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Color Theme Variables */
+:root {
+  /* Default: Dark FinTech Theme */
+  --bg-color: #0B1120;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 212, 255, 0.12);
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --primary-color: #00D4FF; /* Neon Cyan */
+  --secondary-color: #7C3AED; /* Purple */
+  --accent-glow: rgba(0, 212, 255, 0.25);
+  --accent-glow-secondary: rgba(124, 58, 237, 0.18);
+  --success: #22C55E;
+  --error: #EF4444;
+  --toast-bg: rgba(15, 23, 42, 0.85);
+
+  /* Surface tokens — theme-aware replacements for hardcoded white overlays */
+  --surface-muted: rgba(255, 255, 255, 0.02);
+  --surface-subtle: rgba(255, 255, 255, 0.05);
+  --surface-raised: rgba(255, 255, 255, 0.08);
+  --surface-hover: rgba(255, 255, 255, 0.10);
+  --surface-input: rgba(255, 255, 255, 0.05);
+  --skeleton: rgba(255, 255, 255, 0.10);
+  --icon-muted: rgba(148, 163, 184, 0.5);
+  --chart-grid: rgba(255, 255, 255, 0.05);
+  --chart-axis: rgba(148, 163, 184, 0.5);
+  --chart-tooltip-bg: rgba(15, 23, 42, 0.92);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.1);
+  --chart-tooltip-text: #FFFFFF;
+  
+  --mesh-1: rgba(124, 58, 237, 0.12); /* Purple */
+  --mesh-2: rgba(0, 212, 255, 0.08);   /* Cyan */
+
+  /* Spacing & sizing scale */
+  --radius-card: 20px;
+  --radius-control: 12px;
+  --radius-button: 12px;
+  --input-height: 44px;
+  --button-height: 44px;
+}
+
+:root.light-professional {
+  /* Light Professional Theme */
+  --bg-color: #F8FAFC;
+  --card-bg: rgba(255, 255, 255, 0.88); /* Strong solid card background for readability */
+  --border-color: rgba(15, 23, 42, 0.14); /* Crisp, highly-defined fintech borders */
+  --border-glow: rgba(124, 58, 237, 0.14);
+  --text-primary: #0F172A; /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --primary-color: #7C3AED; /* Purple primary */
+  --secondary-color: #0284C7; /* Sky secondary */
+  --accent-glow: rgba(124, 58, 237, 0.20); /* High-contrast purple focus glow */
+  --accent-glow-secondary: rgba(2, 132, 199, 0.12);
+  --success: #16A34A;
+  --error: #DC2626;
+  --toast-bg: rgba(255, 255, 255, 0.95);
+
+  --surface-muted: rgba(15, 23, 42, 0.02);
+  --surface-subtle: rgba(15, 23, 42, 0.04);
+  --surface-raised: rgba(15, 23, 42, 0.06);
+  --surface-hover: rgba(15, 23, 42, 0.08);
+  --surface-input: rgba(15, 23, 42, 0.03);
+  --skeleton: rgba(15, 23, 42, 0.08);
+  --icon-muted: rgba(71, 85, 105, 0.55);
+  --chart-grid: rgba(15, 23, 42, 0.08);
+  --chart-axis: rgba(71, 85, 105, 0.65);
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.96);
+  --chart-tooltip-border: rgba(15, 23, 42, 0.14);
+  --chart-tooltip-text: #0F172A;
+  
+  --mesh-1: rgba(124, 58, 237, 0.05);
+  --mesh-2: rgba(2, 132, 199, 0.05);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Glassmorphism Primitives */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 8px 32px 0 rgba(0, 212, 255, 0.06), 0 0 1px 1px var(--border-glow) inset;
+}
+
+.light-professional .glass-panel {
+  box-shadow: 0 4px 24px 0 rgba(15, 23, 42, 0.08), 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+}
+
+.light-professional .glass-panel-hover:hover {
+  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.08), 0 0 1px 1px var(--border-glow) inset;
+}
+
+.glass-input-field {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: all 0.2s ease-in-out;
+}
+
+.light-professional .glass-input-field {
+  background: rgba(15, 23, 42, 0.02);
+}
+
+.glass-input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Standardized form controls */
+.glass-control {
+  background: var(--surface-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-control);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.glass-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.glass-control::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.65;
+}
+
+/* Standardized data tables */
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.glass-table thead tr {
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-muted);
+}
+
+.glass-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.glass-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.glass-table tbody tr:hover {
+  background: var(--surface-muted);
+}
+
+.glass-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Section header pattern */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.section-subtitle {
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: color-mix(in srgb, var(--text-secondary) 50%, transparent);
+}
+
+/* Icon button */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: var(--radius-control);
+  color: var(--text-secondary);
+  transition: color 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  color: var(--text-primary);
+  background: var(--surface-hover);
+}
+
+/* Surface chip (icon containers in cards) */
+.surface-chip {
+  padding: 0.5rem;
+  border-radius: var(--radius-control);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-color);
+}
+
+/* Badge variants — theme-aware */
+.badge-cyan {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  color: #22d3ee;
+}
+.light-professional .badge-cyan {
+  color: #0891b2;
+}
+
+.badge-purple {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+}
+.light-professional .badge-purple {
+  color: #7c3aed;
+}
+
+.badge-warning {
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  color: #facc15;
+}
+.light-professional .badge-warning {
+  color: #ca8a04;
+}
+
+/* Login branding panel — light mode visibility */
+.login-brand-panel {
+  background: rgba(8, 13, 26, 0.5);
+}
+.light-professional .login-brand-panel {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(2, 132, 199, 0.04) 100%);
+}
+
+/* Shifting animated mesh background */
+.animated-mesh-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  transition: background-color 0.4s ease;
+}
+
+.animated-mesh-bg::before,
+.animated-mesh-bg::after {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.8;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.light-professional .animated-mesh-bg::before,
+.light-professional .animated-mesh-bg::after {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+.animated-mesh-bg::before {
+  background: radial-gradient(circle, var(--mesh-1) 0%, transparent 70%);
+  top: -200px;
+  left: -200px;
+  animation: float 18s ease-in-out infinite alternate;
+}
+
+.animated-mesh-bg::after {
+  background: radial-gradient(circle, var(--mesh-2) 0%, transparent 70%);
+  bottom: -200px;
+  right: -200px;
+  animation: float 22s ease-in-out infinite alternate-reverse;
+}
+
+/* Neon Glow Text effects */
+.text-neon-glow {
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Custom Scrollbar for modern dashboards */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* Dynamic custom float animation */
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, 30px) scale(1.05);
+  }
+  100% {
+    transform: translate(-30px, -50px) scale(0.95);
+  }
+}
+
+/* Visible Keyboard Focus Indicators for WCAG AA compliance */
+*:focus-visible {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+/* Custom placeholder visibility overrides for readable contrast */
+::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 0.65 !important;
+}
+
+.light-professional ::placeholder {
+  color: #475569 !important;
+  opacity: 0.85 !important;
+}
+
+/* Custom One-Shot Ripple Animation for Tactile Button Clicks */
+@keyframes rippleAnimation {
+  from {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: rippleAnimation 600ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+/* Card Flip Animation Classes */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>finsightai</title>
+    <script>
+      // Anti-FOUC: apply the saved theme class before first paint. Must mirror
+      // src/context/ThemeContext.tsx's class logic exactly — if the two ever
+      // diverge, the page will flash the wrong theme on load.
+      (function () {
+        try {
+          var saved = localStorage.getItem('finsight_theme');
+          var theme = saved === 'light-professional' ? 'light-professional' : 'dark-fintech';
+          var root = document.documentElement;
+          root.classList.add(theme);
+          root.style.colorScheme = theme === 'light-professional' ? 'light' : 'dark';
+        } catch (e) {
+          document.documentElement.classList.add('dark-fintech');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
