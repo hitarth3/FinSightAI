@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: finsight-backend
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    healthCheckPath: /api/health/ready
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: APP_NAME
+        value: FinSightAI
+      - key: DEBUG
+        value: "False"
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: ENABLE_MFA
+        value: "False"
+      - key: RATE_LIMIT_ATTEMPTS
+        value: "5"
+      - key: RATE_LIMIT_DURATION
+        value: "30"
+      - key: YAHOO_FINANCE_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: N8N_ANALYTIC_WEBHOOK_URL
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
