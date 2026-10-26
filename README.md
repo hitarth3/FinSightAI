@@ -6,14 +6,55 @@ The **Explore the demo** button opens a read-only workspace with clearly labeled
 
 ## Run the full app locally
 
-Requirements: Docker with Compose, Node.js 22 or newer, and Python 3.11 or newer.
+Requirements: Node.js **22.13+**, Python **3.11+**, and PostgreSQL **16**. Docker is optional.
 
-1. Copy `.env.example` to `.env` and set the PostgreSQL password, a random 64-character hex signing key, and the exact web origins permitted to access the API. Generate a key with `python -c "import secrets; print(secrets.token_hex(32))"`.
-2. Copy `frontend/.env.example` to `frontend/.env.local`. Its default API address works with the local setup. Google sign-in is optional.
-3. Start PostgreSQL with `docker compose up -d db`.
-4. Copy `backend/.env.example` to `backend/.env`. Set the same database password and a fresh signing key. Set `DEBUG=True` for local API docs.
-5. Run `./run.sh`. It checks ports before use, installs the locked Python and JavaScript dependencies, applies Alembic migrations, waits for the database health endpoint, and starts the backend and frontend. It never kills other processes.
-6. Open <http://localhost:5173>. API readiness is available at <http://localhost:8000/api/health/ready>. Interactive API docs are enabled only while `DEBUG=True`.
+### macOS without Docker
+
+Install and start local prerequisites with Homebrew:
+
+```sh
+brew install node@22 python@3.11 postgresql@16
+brew services start postgresql@16
+export PATH="$(brew --prefix node@22)/bin:$(brew --prefix postgresql@16)/bin:$PATH"
+```
+
+For a new database, create a login and database (skip these commands if you already created them):
+
+```sh
+createuser --pwprompt finsight
+createdb --owner=finsight finsight
+```
+
+Choose a database password when prompted. Copy the environment templates only if the destination files do not exist:
+
+```sh
+cp -n backend/.env.example backend/.env
+cp -n frontend/.env.example frontend/.env.local
+openssl rand -hex 32
+```
+
+In `backend/.env`, set `SECRET_KEY` to the generated value and update `DATABASE_URL` with the password chosen above:
+
+```dotenv
+DATABASE_URL=postgresql+asyncpg://finsight:YOUR_PASSWORD@localhost:5432/finsight
+```
+
+URL-encode special characters in the database password when placing it in the URL. Keep `DEBUG=True` for local development and `ENABLE_MFA=False`. Never commit environment files or secrets.
+
+Start the app from the repository root:
+
+```sh
+bash run.sh --check
+bash run.sh
+```
+
+The check validates local tools, Python, configuration-file presence, and occupied ports without installing packages or starting servers. Startup installs dependencies, applies migrations, and launches both servers. If an existing `backend/.venv` uses Python older than 3.11, the script prints commands to preserve and recreate it. You can set `PYTHON_BIN=/path/to/python3.11` when creating a new environment.
+
+Open <http://localhost:5173>. Press **Ctrl+C** to stop both servers. API readiness is at <http://localhost:8000/api/health/ready>; API docs are at <http://localhost:8000/docs> when `DEBUG=True`.
+
+### Optional Docker database
+
+To use Docker for PostgreSQL instead, copy `.env.example` to `.env`, set `POSTGRES_PASSWORD` and `SECRET_KEY`, then run `docker compose up -d db`. Use the same database password in `backend/.env` and start the app with `bash run.sh`. The native PostgreSQL service must be stopped first if it uses port 5432.
 
 `frontend/.env.example` and `backend/.env.example` list optional integrations. The core tracking experience does not require them. Without an API, use the demo button; authenticated data requires PostgreSQL and the backend.
 
