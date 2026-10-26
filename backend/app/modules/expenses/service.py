@@ -160,6 +160,9 @@ class ExpenseService:
             return None
         if expense.source_type == "MANUAL" and data.get("category") is not None:
             data = {**data, "nature": manual_transaction_nature(data["category"])}
+        # The shared repository skips None, but notes are explicitly clearable.
+        if "notes" in data and data["notes"] is None:
+            expense.notes = None
         return await self.expense_repo.update(expense, data)
 
     async def delete_expense(self, id: uuid.UUID, user_id: uuid.UUID) -> bool:

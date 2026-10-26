@@ -2,7 +2,7 @@ import uuid
 from datetime import date as date_type
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.modules.expenses.models import ExpenseCategory, PaymentMethod
 
@@ -28,11 +28,18 @@ class ExpenseUploadConfirm(BaseModel):
 
 class ExpenseUpdate(BaseModel):
     amount: Optional[float] = Field(None, gt=0, allow_inf_nan=False)
-    merchant: Optional[str] = Field(None, max_length=100)
+    merchant: Optional[str] = Field(None, min_length=1, max_length=100)
     category: Optional[ExpenseCategory] = None
     payment_method: Optional[PaymentMethod] = None
     expense_date: Optional[date_type] = None
     notes: Optional[str] = Field(None, max_length=500)
+
+    @field_validator("amount", "merchant", "category", "payment_method", "expense_date", mode="before")
+    @classmethod
+    def reject_null_required_fields(cls, value):
+        if value is None:
+            raise ValueError("This field cannot be null; omit it to keep its current value.")
+        return value
 
 
 class ExpenseResponse(BaseModel):

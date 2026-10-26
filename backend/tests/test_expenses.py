@@ -54,6 +54,23 @@ async def test_expense_crud_workflow(client: AsyncClient) -> None:
     assert update_resp.status_code == 200
     assert update_resp.json()["data"]["notes"] == "Weekly groceries grocery shopping - Updated"
 
+    # Required columns may be omitted on an edit, but never explicitly cleared.
+    for field in ("amount", "merchant", "category", "payment_method", "expense_date"):
+        invalid = await client.put(
+            f"/api/expenses/{expense_id}", json={field: None}, headers=headers
+        )
+        assert invalid.status_code == 422
+    empty_merchant = await client.put(
+        f"/api/expenses/{expense_id}", json={"merchant": ""}, headers=headers
+    )
+    assert empty_merchant.status_code == 422
+    clear_notes = await client.put(
+        f"/api/expenses/{expense_id}", json={"notes": None}, headers=headers
+    )
+    assert clear_notes.status_code == 200
+    assert clear_notes.json()["data"]["notes"] is None
+    assert clear_notes.json()["data"]["amount"] == 2500.50
+
     # 5. Delete Expense
     delete_resp = await client.delete(f"/api/expenses/{expense_id}", headers=headers)
     assert delete_resp.status_code == 200
