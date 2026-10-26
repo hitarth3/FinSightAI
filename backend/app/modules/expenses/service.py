@@ -13,6 +13,19 @@ from app.modules.expenses.grok_service import GrokService
 
 logger = logging.getLogger(__name__)
 
+
+def manual_transaction_nature(category: ExpenseCategory) -> str:
+    """Classify entries without a statement's explicit transaction direction."""
+    if category == ExpenseCategory.BANK_TRANSFER:
+        return "TRANSFER"
+    if category in {
+        ExpenseCategory.SALARY, ExpenseCategory.BONUS, ExpenseCategory.INTEREST,
+        ExpenseCategory.FREELANCE, ExpenseCategory.REFUND,
+        ExpenseCategory.INVESTMENT_RETURN,
+    }:
+        return "INCOME"
+    return "EXPENSE"
+
 # Make sure local uploads directories are created
 UPLOAD_DIR = "uploads"
 THUMBNAIL_DIR = os.path.join(UPLOAD_DIR, "thumbnails")
@@ -30,8 +43,10 @@ class ExpenseService:
         return await self.expense_repo.get_by_user(user_id)
 
     async def create_manual_expense(self, user_id: uuid.UUID, data: dict) -> Expense:
+        data = dict(data)
         data["user_id"] = user_id
         data["source_type"] = "MANUAL"
+        data["nature"] = manual_transaction_nature(data["category"])
         data["ai_confidence"] = 1.0
         return await self.expense_repo.create(data)
 
@@ -143,6 +158,8 @@ class ExpenseService:
         expense = await self.expense_repo.get(id)
         if not expense or expense.user_id != user_id:
             return None
+        if expense.source_type == "MANUAL" and data.get("category") is not None:
+            data = {**data, "nature": manual_transaction_nature(data["category"])}
         return await self.expense_repo.update(expense, data)
 
     async def delete_expense(self, id: uuid.UUID, user_id: uuid.UUID) -> bool:

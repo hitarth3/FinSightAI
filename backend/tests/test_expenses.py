@@ -135,3 +135,46 @@ async def test_expense_analytics_summary(client: AsyncClient, db_session: AsyncS
     assert summary_data["this_year"]["total_income"] == 5000.00
     assert summary_data["this_year"]["net_cashflow"] == 3500.00
 
+
+@pytest.mark.asyncio
+async def test_manual_categories_drive_cashflow(client: AsyncClient) -> None:
+    from datetime import date
+
+    credentials = {"email": "cashflow@finsight.ai", "password": "Password123!"}
+    registered = await client.post(
+        "/api/auth/register", json={**credentials, "full_name": "Cashflow Test"}
+    )
+    assert registered.status_code == 201
+    login = await client.post("/api/auth/login", json=credentials)
+    headers = {"Authorization": f"Bearer {login.json()['data']['access_token']}"}
+    ids = {}
+    for category, amount, nature in [
+        ("SALARY", 5000, "INCOME"),
+        ("FOOD", 1000, "EXPENSE"),
+        ("BANK_TRANSFER", 2000, "TRANSFER"),
+    ]:
+        response = await client.post("/api/expenses/manual", headers=headers, json={
+            "amount": amount, "merchant": "Manual entry", "category": category,
+            "payment_method": "NET_BANKING", "expense_date": date.today().isoformat(),
+        })
+        assert response.status_code == 201
+        assert response.json()["data"]["nature"] == nature
+        ids[category] = response.json()["data"]["id"]
+
+    summary = await client.get("/api/expenses/analytics/summary", headers=headers)
+    month = summary.json()["data"]["this_month"]
+    assert month["total_income"] == 5000
+    assert month["total_amount"] == 1000
+    assert month["net_cashflow"] == 4000
+
+    # Correcting a manual category must also correct the dashboard classification.
+    corrected = await client.put(
+        f"/api/expenses/{ids['FOOD']}", headers=headers, json={"category": "REFUND"}
+    )
+    assert corrected.status_code == 200
+    assert corrected.json()["data"]["nature"] == "INCOME"
+    summary = await client.get("/api/expenses/analytics/summary", headers=headers)
+    month = summary.json()["data"]["this_month"]
+    assert month["total_income"] == 6000
+    assert month["total_amount"] == 0
+    assert month["net_cashflow"] == 6000
