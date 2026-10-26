@@ -1,0 +1,10 @@
+import { build } from 'esbuild';
+import { readdir, mkdir } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+const outdir = path.resolve('node_modules/.cache/finsight-tests');
+await mkdir(outdir, { recursive: true });
+const entries = (await readdir('tests')).filter(name => name.endsWith('.test.ts')).map(name => `tests/${name}`);
+await build({ entryPoints: entries, bundle: true, platform: 'node', format: 'esm', packages: 'external', outdir, outExtension: { '.js': '.mjs' }, define: { 'import.meta.env': '{}' } });
+const result = spawnSync(process.execPath, ['--test', ...entries.map(name => path.join(outdir, path.basename(name).replace('.ts', '.mjs')))], { stdio: 'inherit' });
+process.exit(result.status ?? 1);
