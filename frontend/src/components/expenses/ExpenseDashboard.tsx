@@ -13,15 +13,17 @@ import { GlassButton } from '../ui/GlassButton';
 import { LoadingSkeleton } from '../ui/LoadingSkeleton';
 import { ErrorState } from '../ui/ErrorState';
 
+import type { Expense } from '../../types/expense';
+
 interface ExpenseDashboardProps {
   onBack: () => void;
 }
 
 export const ExpenseDashboard: React.FC<ExpenseDashboardProps> = ({ onBack }) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [selectedExpense, setSelectedExpense] = useState<any>(null);
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
-  const { data: expenses, isLoading, error } = useQuery({
+  const { data: expenses, isLoading, error, refetch } = useQuery<Expense[]>({
     queryKey: ['expenses'],
     queryFn: expenseService.getExpenses,
   });
@@ -73,7 +75,7 @@ export const ExpenseDashboard: React.FC<ExpenseDashboardProps> = ({ onBack }) =>
       {isLoading ? (
         <LoadingSkeleton shape="rows" rows={5} />
       ) : error || !expenses ? (
-        <ErrorState title="Transaction History" message="Failed to load transaction history." />
+        <ErrorState title="Transaction History" message="Failed to load transaction history." onRetry={() => void refetch()} />
       ) : (
         <ExpenseTable expenses={expenses} onViewDetails={(exp) => setSelectedExpense(exp)} />
       )}

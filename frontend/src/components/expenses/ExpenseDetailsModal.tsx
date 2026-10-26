@@ -1,13 +1,15 @@
 import React from 'react';
 import { GlassModal } from '../ui/GlassModal';
 import { ReceiptPreview } from './ReceiptPreview';
-import { Calendar, Tag, CreditCard, Award, FileText } from 'lucide-react';
+import { Calendar, CreditCard, Award, FileText } from 'lucide-react';
 import { GlassBadge } from '../ui/GlassBadge';
+
+import type { Expense } from '../../types/expense';
 
 interface ExpenseDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  expense: any;
+  expense: Expense | null;
 }
 
 export const ExpenseDetailsModal: React.FC<ExpenseDetailsModalProps> = ({ isOpen, onClose, expense }) => {
@@ -17,16 +19,16 @@ export const ExpenseDetailsModal: React.FC<ExpenseDetailsModalProps> = ({ isOpen
   const confidencePercent = Math.round(expense.ai_confidence * 100);
 
   return (
-    <GlassModal isOpen={isOpen} onClose={onClose} title="Expense Details" size="sm">
+    <GlassModal isOpen={isOpen} onClose={onClose} title="Transaction details" size="sm">
       <div className="space-y-5 text-sm">
         {/* Header summary */}
         <div className="flex flex-col items-center justify-center py-4 rounded-2xl bg-[var(--surface-muted)] border border-[var(--border-color)] gap-1.5">
-          <span className="text-3xl font-black text-[var(--text-primary)]">₹{expense.amount.toLocaleString()}</span>
+          <span className="text-3xl font-black text-[var(--text-primary)]">₹{expense.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           <span className="font-semibold text-[var(--text-primary)]/90 text-sm">{expense.merchant}</span>
           <div className="flex gap-2 mt-1">
             <GlassBadge variant="cyan">{expense.category}</GlassBadge>
             <GlassBadge variant={isAiExtracted ? 'success' : 'neutral'}>
-              {expense.source_type.replace('_', ' ')}
+              {expense.source_type.replaceAll('_', ' ')}
             </GlassBadge>
           </div>
         </div>
@@ -45,7 +47,7 @@ export const ExpenseDetailsModal: React.FC<ExpenseDetailsModalProps> = ({ isOpen
             <CreditCard className="w-4 h-4 text-[var(--secondary-color)] shrink-0" />
             <div className="flex flex-col">
               <span className="text-[10px] text-[var(--text-secondary)]/50 uppercase font-bold">Payment Method</span>
-              <span className="text-xs text-[var(--text-primary)] font-semibold">{expense.payment_method.replace('_', ' ')}</span>
+              <span className="text-xs text-[var(--text-primary)] font-semibold">{expense.payment_method.replaceAll('_', ' ')}</span>
             </div>
           </div>
 
