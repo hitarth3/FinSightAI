@@ -14,6 +14,7 @@ def prices(monkeypatch):
                          index=pd.date_range('2026-07-01', periods=60, tz='UTC'))
     monkeypatch.setattr(stock_report, '_history', lambda symbol: frame)
     monkeypatch.setattr(settings, 'GROQ_API_KEY', None)
+    monkeypatch.setattr(stock_report, 'fetch_company_news', AsyncMock(return_value=[]))
     return frame
 
 
@@ -24,7 +25,7 @@ async def test_report_uses_real_metrics(prices):
     assert report.strength_score == 90
     assert report.support_levels == [108.0, 138.0]
     assert report.resistance_levels == [161.0]
-    assert report.sentiment == 'Not evaluated'
+    assert report.sentiment == 'Unavailable'
     assert 'rules-based' in report.summary
     assert '2026-08-29' in report.summary
 
@@ -94,7 +95,7 @@ async def test_provider_failure_endpoint(client, monkeypatch):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize('content, expected', [
-    ('{"summary":"The supplied price averages indicate a positive historical trend."}', 'AI-assisted technical report'),
+    ('{"summary":"The supplied price averages indicate a positive historical trend.","articles":[]}', 'AI-assisted technical report'),
     ('{"summary":42}', 'AI summary unavailable'),
     ('not json', 'AI summary unavailable'),
 ])
@@ -106,4 +107,4 @@ async def test_ai_response_validation(prices, monkeypatch, content, expected):
     report = await stock_report.generate_report('TCS')
     assert expected in report.summary
     assert report.strength_score == 90
-    assert report.sentiment == 'Not evaluated'
+    assert report.sentiment == 'Unavailable'

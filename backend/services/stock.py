@@ -1,5 +1,4 @@
 import uuid
-import random
 import time as time_lib
 from datetime import datetime, time, timezone, timedelta
 from typing import Any, Dict, List, Optional
@@ -90,35 +89,19 @@ class StockService:
         return await self.repo.delete(id)
 
     async def get_stock_news(self, symbol: str) -> List[Dict[str, Any]]:
-        """Simulates third party stock news query adapters (Plaid, Yahoo)."""
-        headlines = [
-            f"{symbol} surges ahead of quarterly earnings report.",
-            f"Analysts upgrade {symbol} rating as trading volume increases.",
-            f"AI Sentiment Scanner identifies positive momentum on {symbol}.",
-            f"Market forces push {symbol} below support thresholds."
-        ]
-        
-        return [
-            {
-                "title": title,
-                "source": "FinSightAI Market Feed",
-                "timestamp": "1h ago",
-                "summary": "Simulated news article description highlighting asset volume movements."
-            }
-            for title in headlines
-        ]
+        """Return dated company headlines, never simulated news."""
+        from services.stock_news import fetch_company_news
+        from services.stock_report import normalize_symbol
+        return await fetch_company_news(normalize_symbol(symbol))
 
     async def get_stock_sentiment(self, symbol: str) -> Dict[str, Any]:
-        """Future AI sentiment analysis placeholder stub."""
-        score = round(random.uniform(0.1, 0.9), 2)
-        label = "Bullish" if score > 0.6 else "Bearish" if score < 0.4 else "Neutral"
-        
+        from services.stock_report import generate_report
+        report = await generate_report(symbol)
         return {
-            "symbol": symbol.upper(),
-            "sentiment_score": score,
-            "sentiment_label": label,
-            "ai_confidence": 0.82,
-            "details": f"AI models scanned social media feeds and financial newsletters to calculate {label} momentum."
+            "symbol": report.symbol,
+            "sentiment_label": report.sentiment,
+            "confidence": report.confidence / 100,
+            "details": report.evidence,
         }
 
     async def fetch_yahoo_chart(self, symbol: str) -> Dict[str, Any]:

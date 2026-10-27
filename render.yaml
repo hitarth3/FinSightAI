@@ -42,6 +42,6 @@ services:
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: STOCK_REPORT_MODEL
-        value: llama-3.3-70b-versatile
+        value: openai/gpt-oss-120b
       - key: CORS_ALLOWED_ORIGINS
         sync: false

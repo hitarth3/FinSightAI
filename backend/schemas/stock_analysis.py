@@ -14,6 +14,7 @@ class StockAnalysisCreate(BaseModel):
     sentiment: str = Field(..., max_length=50)
     support_levels: List[float]
     resistance_levels: List[float]
+    evidence: dict = Field(default_factory=dict)
     summary: str
     analysis_generated_at: datetime
 
@@ -29,6 +30,7 @@ class StockAnalysisResponse(BaseModel):
     sentiment: str
     support_levels: List[float]
     resistance_levels: List[float]
+    evidence: dict = Field(default_factory=dict)
     summary: str
     analysis_generated_at: datetime
     created_at: datetime

@@ -19,6 +19,7 @@ class StockAnalysis(Base):
     sentiment: Mapped[str] = mapped_column(String(50), nullable=False)
     support_levels: Mapped[list] = mapped_column(JSON, nullable=False)
     resistance_levels: Mapped[list] = mapped_column(JSON, nullable=False)
+    evidence: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict, server_default="{}")
     summary: Mapped[str] = mapped_column(Text, nullable=False)
     analysis_generated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
