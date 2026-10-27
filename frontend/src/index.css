@@ -562,3 +562,18 @@ button { touch-action: manipulation; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 .finance-dialog { background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; width: calc(100% - 32px); max-height: 90dvh; overflow-y: auto; padding: 0; box-shadow: 0 25px 80px #0003; }
 .finance-dialog::backdrop { background: #101c1988; backdrop-filter: blur(4px); }
+
+/* Shared module layout: one shell heading, consistent controls and section navigation. */
+.module-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.module-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.module-meta { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+.section-nav { display: flex; gap: 4px; border-bottom: 1px solid var(--border-color); overflow-x: auto; }
+.section-nav button { padding: 12px 18px; min-height: 44px; white-space: nowrap; color: var(--text-secondary); font-size: 14px; border-bottom: 2px solid transparent; }
+.section-nav button[aria-pressed="true"] { color: var(--primary-color); border-bottom-color: var(--primary-color); font-weight: 600; }
+.section-nav button:hover { background: var(--surface-subtle); }
+.dashboard-main .glass-panel { border-radius: 14px; }
+.dashboard-main .glass-panel::before { display: none; }
+.primary-action { min-height: 44px; font-size: 13px; border-radius: var(--radius-button); }
+.page-intro > div > p:last-child, .panel-heading p { font-size: 13px; }
+.dashboard-main .text-xs { font-size: 13px; line-height: 1.6; }
+@media (max-width: 767px) { .module-toolbar { align-items: stretch; }.module-actions { width: 100%; }.module-actions > button { flex: 1; }.section-nav button { padding-inline: 14px; } }

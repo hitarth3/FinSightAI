@@ -1,8 +1,9 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { LayoutDashboard, Receipt, CreditCard, ChartNoAxesCombined, Sparkles, LogOut, ArrowUpRight, Menu, X, Plus, CalendarDays } from 'lucide-react';
 import { useAuth } from './context/AuthContext';
 import { ThemeToggle } from './components/ThemeToggle';
 import { Overview, type DashboardView } from './components/dashboard/Overview';
+import { readWorkspaceRoute } from './utils/workspaceRoute';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 const ExpenseDashboard = lazy(() => import('./components/expenses/ExpenseDashboard').then(m => ({ default: m.ExpenseDashboard })));
@@ -21,9 +22,14 @@ const navigation = [
 
 export const DashboardPage = ({ demo = false, onExitDemo }: { demo?: boolean; onExitDemo?: () => void }) => {
   const { user, logout } = useAuth();
-  const [view, setView] = useState<DashboardView>('overview');
+  const [view, setView] = useState<DashboardView>(() => readWorkspaceRoute(window.location.hash, demo));
   const [mobileOpen, setMobileOpen] = useState(false);
-  const navigate = (next: DashboardView) => { setView(next); setMobileOpen(false); window.scrollTo({ top: 0 }); };
+  useEffect(() => {
+    const update = () => { setView(readWorkspaceRoute(window.location.hash, demo)); setMobileOpen(false); };
+    window.addEventListener('hashchange', update);
+    return () => window.removeEventListener('hashchange', update);
+  }, [demo]);
+  const navigate = (next: DashboardView) => { window.location.hash = `/${next}`; setView(next); setMobileOpen(false); window.scrollTo({ top: 0 }); };
   const name = demo ? 'Alex Morgan' : user?.fullName || user?.email?.split('@')[0] || 'there';
   const selected = navigation.find(item => item.id === view)!;
   const date = demo ? 'October 2026' : new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });

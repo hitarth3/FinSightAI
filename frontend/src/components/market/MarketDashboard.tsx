@@ -142,36 +142,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header Panel with Back Controller */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[var(--border-color)] gap-4">
-        <div className="flex items-center gap-3">
-          <GlassButton 
-            variant="outline" 
-            onClick={onBack}
-            className="py-1.5 px-3 text-xs border-[var(--border-color)] hover:bg-[var(--surface-subtle)] cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Overview</span>
-          </GlassButton>
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-[var(--text-primary)] flex items-center gap-1.5">
-              Market Overview Dashboard
-            </h2>
-            <p className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-secondary)]/50">
-              Indian Exchange Ticker & Technical Insights
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-secondary)]/70 font-semibold bg-[var(--surface-muted)] border border-[var(--border-color)] px-2.5 py-1.5 rounded-lg shrink-0">
-            <Clock className="w-3.5 h-3.5" />
-            <span>Updated: {lastUpdated || 'Syncing...'}</span>
-          </div>
-
-        </div>
-      </div>
-
+      <p className="module-meta">Prices updated: {lastUpdated || 'Loading…'}</p>
       {/* Global Stock Search bar & manual trigger */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <StockSearchPanel onStockSelect={handleStockClick} />
@@ -183,7 +154,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
           disabled={isRefreshing}
         >
           <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-          <span>{isRefreshing ? 'Syncing...' : 'Sync Market Feed'}</span>
+          <span>{isRefreshing ? 'Syncing...' : 'Refresh prices'}</span>
         </GlassButton>
       </div>
 
@@ -193,10 +164,10 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3 animate-bounce" />
           <h4 className="text-sm font-bold text-[var(--text-primary)] mb-2">Feed Connection Failure</h4>
           <p className="text-xs text-[var(--text-secondary)]/85 mb-4 max-w-md mx-auto">
-            {error} Please verify your terminal network adapters or retry the API handshake below.
+            {error} Please try again.
           </p>
           <GlassButton variant="outline" onClick={() => loadDashboardData()} className="mx-auto text-xs py-2 px-5">
-            Retry Connection Handshake
+            Try again
           </GlassButton>
         </GlassCard>
       ) : (
