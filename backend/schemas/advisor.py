@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Literal
 import uuid
 
 
@@ -86,13 +86,13 @@ class CardRecommendationResponse(BaseModel):
 
 
 class ChatHistoryItem(BaseModel):
-    role: str  # 'user' or 'assistant'
-    content: str
+    role: Literal['user', 'assistant']
+    content: str = Field(..., min_length=1, max_length=8000)
 
 
 class AdvisorChatRequest(BaseModel):
-    message: str = Field(..., min_length=1)
-    history: List[ChatHistoryItem] = []
+    message: str = Field(..., min_length=1, max_length=4000)
+    history: List[ChatHistoryItem] = Field(default_factory=list, max_length=20)
 
 
 class AdvisorChatResponse(BaseModel):
@@ -100,7 +100,7 @@ class AdvisorChatResponse(BaseModel):
 
 
 class FinanceChatRequest(BaseModel):
-    message: str = Field("", min_length=0)
-    history: List[ChatHistoryItem] = []
+    message: str = Field("", min_length=0, max_length=4000)
+    history: List[ChatHistoryItem] = Field(default_factory=list, max_length=20)
     is_analyze: bool = False
 

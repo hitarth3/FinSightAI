@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: Optional[str] = None
     GOOGLE_CLIENT_ID: Optional[str] = None
     AI_PROVIDER: str = "groq"
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+    GROQ_FALLBACK_MODEL: str = "openai/gpt-oss-20b"
     YAHOO_FINANCE_API_KEY: Optional[str] = None
     STOCK_REPORT_MODEL: str = "openai/gpt-oss-120b"
     CORS_ALLOWED_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174"

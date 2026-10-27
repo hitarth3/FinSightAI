@@ -51,7 +51,7 @@ export function FinanceAssistantCockpit({ workspace, setWorkspace }: {
       const response = await apiFetch(`${API_BASE}/api/advisor/${activeScope === 'cards' ? 'chat' : 'finance-chat'}`, {
         method: 'POST', signal: abort.signal,
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('finsight_access_token') || ''}` },
-        body: JSON.stringify({ message: question.trim(), history, ...(activeScope === 'finance' ? { is_analyze: false } : {}) }),
+        body: JSON.stringify({ message: question.trim(), history: history.slice(-4).map(item => ({ ...item, content: item.content.slice(0, 8000) })), ...(activeScope === 'finance' ? { is_analyze: false } : {}) }),
       });
       const json = await response.json();
       if (!response.ok || typeof json.data?.reply !== 'string') throw new Error('Unable to load a reply.');

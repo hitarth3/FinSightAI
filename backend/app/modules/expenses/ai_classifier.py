@@ -68,13 +68,8 @@ class AIClassifier:
                     model_name="gemini-2.5-flash"
                 )
             elif provider == "groq" and settings.GROQ_API_KEY:
-                from langchain_groq import ChatGroq
-                logger.info("Initializing ChatGroq (llama-3.3-70b-versatile)...")
-                return ChatGroq(
-                    temperature=0.0,
-                    groq_api_key=settings.GROQ_API_KEY,
-                    model_name="llama-3.3-70b-versatile"
-                )
+                from services.ai_client import groq_model
+                return groq_model(temperature=0, max_tokens=6000)
             elif provider == "openai" and settings.OPENAI_API_KEY:
                 from langchain_openai import ChatOpenAI
                 logger.info("Initializing ChatOpenAI (gpt-4o-mini)...")

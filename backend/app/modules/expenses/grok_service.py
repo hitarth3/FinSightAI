@@ -109,7 +109,7 @@ class GrokService:
                             "Content-Type": "application/json"
                         },
                         json={
-                            "model": "llama-3.3-70b-versatile",
+                            "model": settings.GROQ_MODEL,
                             "messages": [
                                 {"role": "system", "content": "You are a precise JSON extractor. You must return valid JSON representing the parsed receipt fields."},
                                 {"role": "user", "content": prompt}
@@ -126,8 +126,8 @@ class GrokService:
                         if parsed:
                             return parsed
                     else:
-                        logger.warning(f"Groq API primary model llama-3.3-70b-versatile failed with status {response.status_code}: {response.text}. Trying fallback model...")
-                        # Try fallback model: mixtral-8x7b-32768
+                        logger.warning(f"Groq API primary model failed with status {response.status_code}: {response.text}. Trying fallback model...")
+                        # Try the configured fallback model
                         response_fallback = await client.post(
                             "https://api.groq.com/openai/v1/chat/completions",
                             headers={
@@ -135,7 +135,7 @@ class GrokService:
                                 "Content-Type": "application/json"
                             },
                             json={
-                                "model": "mixtral-8x7b-32768",
+                                "model": settings.GROQ_FALLBACK_MODEL,
                                 "messages": [
                                     {"role": "system", "content": "You are a precise JSON extractor. You must return valid JSON representing the parsed receipt fields."},
                                     {"role": "user", "content": prompt}

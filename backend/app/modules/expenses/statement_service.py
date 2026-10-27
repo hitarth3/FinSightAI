@@ -214,7 +214,7 @@ class StatementService:
             api_url = "https://api.groq.com/openai/v1/chat/completions"
             headers["Authorization"] = f"Bearer {groq_key}"
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": settings.GROQ_MODEL,
                 "messages": [
                     {"role": "system", "content": "You are a precise JSON extractor. You must return valid JSON representing the classifications."},
                     {"role": "user", "content": prompt}
