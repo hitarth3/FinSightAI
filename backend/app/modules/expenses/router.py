@@ -89,7 +89,8 @@ async def upload_receipt(
     result = await service.process_receipt_upload(current_user.id, file)
     return StandardResponse(
         success=True,
-        message="Receipt scanned and parsed successfully.",
+        message=("Receipt uploaded. Review and correct the extracted fields."
+                 if result["needs_manual_review"] else "Receipt scanned. Confirm the extracted fields."),
         data=UploadResponse.model_validate(result)
     )
 
@@ -654,27 +655,37 @@ async def get_uploaded_file(
     # Without this, any authenticated user could read any other user's financial
     # documents by guessing/enumerating the UUID-based filename.
     expected_url = f"/api/expenses/uploads/{file_path}"
-    owns_file = await db.execute(
+    owner_id = await db.scalar(
         select(Expense.id).where(
-            and_(
-                Expense.user_id == current_user.id,
-                (Expense.receipt_url == expected_url) | (Expense.thumbnail_url == expected_url)
-            )
-        )
+            Expense.user_id == current_user.id,
+            (Expense.receipt_url == expected_url) | (Expense.thumbnail_url == expected_url)
+        ).limit(1)
     )
-    if not owns_file.scalars().first():
-        owns_file = await db.execute(
+    if owner_id is None:
+        upload_filter = ExpenseUpload.file_url == expected_url
+        # Unconfirmed receipts also own their generated thumbnail. Match the
+        # canonical UUID filename, never an arbitrary client-supplied path.
+        if file_path.startswith("thumbnails/") and file_path.endswith("_thumb.png"):
+            candidate = file_path.removeprefix("thumbnails/").removesuffix("_thumb.png")
+            try:
+                upload_id = uuid.UUID(candidate)
+            except ValueError:
+                upload_id = None
+            if upload_id is not None and str(upload_id) == candidate:
+                upload_filter = ExpenseUpload.id == upload_id
+        owner_id = await db.scalar(
             select(ExpenseUpload.id).where(
-                and_(ExpenseUpload.user_id == current_user.id, ExpenseUpload.file_url == expected_url)
-            )
+                ExpenseUpload.user_id == current_user.id, upload_filter
+            ).limit(1)
         )
-    if not owns_file.scalars().first():
-        owns_file = await db.execute(
+    if owner_id is None:
+        owner_id = await db.scalar(
             select(StatementImport.id).where(
-                and_(StatementImport.user_id == current_user.id, StatementImport.file_url == expected_url)
-            )
+                StatementImport.user_id == current_user.id,
+                StatementImport.file_url == expected_url
+            ).limit(1)
         )
-    if not owns_file.scalars().first():
+    if owner_id is None:
         raise HTTPException(status_code=404, detail="File not found.")
 
     full_path = os.path.join(UPLOAD_DIR, file_path)
