@@ -17,11 +17,11 @@ const queryClient = new QueryClient({ defaultOptions: { queries: {
 } } });
 
 function AppContent() {
-  const { state, isAuthenticated } = useAuth();
+  const { state, isAuthenticated, user } = useAuth();
   const [demo, setDemo] = useState(false);
   if (state === 'initializing') return <div className="app-loading" role="status">Opening your workspace…</div>;
   return <Suspense fallback={<div className="app-loading" role="status">Loading your workspace…</div>}>
-    {isAuthenticated || demo ? <DashboardPage key={demo ? 'demo' : 'account'} demo={demo} onExitDemo={() => setDemo(false)} /> : <><ThemeToggle /><LoginPage onExploreDemo={() => setDemo(true)} /></>}
+    {isAuthenticated || demo ? <DashboardPage key={demo ? 'demo' : user?.id || 'account'} demo={demo} onExitDemo={() => setDemo(false)} /> : <><ThemeToggle /><LoginPage onExploreDemo={() => setDemo(true)} /></>}
   </Suspense>;
 }
 

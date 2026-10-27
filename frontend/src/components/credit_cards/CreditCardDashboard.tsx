@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { creditCardService, UserCreditCard } from '../../services/creditCardService';
+import { SectionNav } from '../ui/SectionNav';
+import { BestCardFinder } from '../advisor/BestCardFinder';
+import { RewardsAnalytics } from '../advisor/RewardsAnalytics';
+import { CardRecommendations } from '../advisor/CardRecommendations';
 import { SummaryCards } from './SummaryCards';
 import { CreditCardList } from './CreditCardList';
 import { InsightsSection } from './InsightsSection';
@@ -17,6 +21,7 @@ interface CreditCardDashboardProps {
 }
 
 export const CreditCardDashboard: React.FC<CreditCardDashboardProps> = ({ onBack, onOpenAdvisor }) => {
+  const [section, setSection] = useState<'cards' | 'rewards' | 'compare'>('cards');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<UserCreditCard | null>(null);
 
@@ -36,6 +41,9 @@ export const CreditCardDashboard: React.FC<CreditCardDashboardProps> = ({ onBack
         </div>
       </div>
 
+      <SectionNav label="Credit card sections" value={section} onChange={setSection}
+        items={[{ value: 'cards', label: 'My cards' }, { value: 'rewards', label: 'Rewards' }, { value: 'compare', label: 'Compare' }]} />
+      {section === 'cards' && <>
       {/* Aggregate metrics */}
       <SummaryCards />
 
@@ -72,6 +80,9 @@ export const CreditCardDashboard: React.FC<CreditCardDashboardProps> = ({ onBack
         </div>
       </div>
 
+      </>}
+      {section === 'rewards' && <div className="space-y-6"><BestCardFinder /><RewardsAnalytics /></div>}
+      {section === 'compare' && <CardRecommendations />}
       {/* Modals */}
       <AddCardModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} />
       <EditCardModal 

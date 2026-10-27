@@ -3,13 +3,13 @@ import { LayoutDashboard, Receipt, CreditCard, ChartNoAxesCombined, Sparkles, Lo
 import { useAuth } from './context/AuthContext';
 import { ThemeToggle } from './components/ThemeToggle';
 import { Overview, type DashboardView } from './components/dashboard/Overview';
+import type { AssistantWorkspace } from './components/advisor/FinanceAssistantCockpit';
 import { readWorkspaceRoute } from './utils/workspaceRoute';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 const ExpenseDashboard = lazy(() => import('./components/expenses/ExpenseDashboard').then(m => ({ default: m.ExpenseDashboard })));
 const CreditCardDashboard = lazy(() => import('./components/credit_cards/CreditCardDashboard').then(m => ({ default: m.CreditCardDashboard })));
 const MarketDashboard = lazy(() => import('./components/market/MarketDashboard').then(m => ({ default: m.MarketDashboard })));
-const SmartCardAdvisor = lazy(() => import('./components/advisor/SmartCardAdvisor').then(m => ({ default: m.SmartCardAdvisor })));
 const FinanceAssistant = lazy(() => import('./components/advisor/FinanceAssistantCockpit').then(m => ({ default: m.FinanceAssistantCockpit })));
 
 const navigation = [
@@ -23,6 +23,7 @@ const navigation = [
 export const DashboardPage = ({ demo = false, onExitDemo }: { demo?: boolean; onExitDemo?: () => void }) => {
   const { user, logout } = useAuth();
   const [view, setView] = useState<DashboardView>(() => readWorkspaceRoute(window.location.hash, demo));
+  const [assistant, setAssistant] = useState<AssistantWorkspace>({ scope: 'finance', conversations: { finance: [], cards: [] }, draft: '' });
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
     const update = () => { setView(readWorkspaceRoute(window.location.hash, demo)); setMobileOpen(false); };
@@ -49,7 +50,7 @@ export const DashboardPage = ({ demo = false, onExitDemo }: { demo?: boolean; on
         {demo && <div className="demo-banner"><span><strong>You’re exploring the demo.</strong> All figures are fictional. No account needed.</span><button onClick={onExitDemo}>Use my own data <ArrowUpRight size={15} /></button></div>}
         <div className="page-intro"><div><p className="eyebrow">YOUR MONEY, IN FOCUS</p><h1>{view === 'overview' ? `Welcome back, ${name.split(' ')[0]}` : selected.label}<span className="heading-dot">.</span></h1><p>{view === 'overview' ? 'A little clarity for your next financial decision.' : view === 'expenses' ? 'Every transaction tells part of your story.' : view === 'cards' ? 'Understand your balances, limits, and rewards.' : view === 'market' ? 'Follow the market. Keep your goals in sight.' : 'Explore your finances with a little assistance.'}</p></div><div className="intro-actions"><span className="date-pill"><CalendarDays size={15} />{date}</span>{view === 'overview' && <button className="primary-action" onClick={() => navigate('expenses')}><Plus size={17} />Manage expenses</button>}</div></div>
         <ErrorBoundary key={view}><Suspense fallback={<div className="data-message" role="status">Loading {selected.label.toLowerCase()}…</div>}>
-          {demo || view === 'overview' ? <Overview demo={demo} view={view} onNavigate={navigate} /> : view === 'expenses' ? <ExpenseDashboard onBack={() => navigate('overview')} /> : view === 'cards' ? <CreditCardDashboard onBack={() => navigate('overview')} onOpenAdvisor={() => navigate('advisor')} /> : view === 'market' ? <MarketDashboard onBack={() => navigate('overview')} /> : <div className="space-y-6"><FinanceAssistant /><SmartCardAdvisor onBack={() => navigate('cards')} /></div>}
+          {demo || view === 'overview' ? <Overview demo={demo} view={view} onNavigate={navigate} /> : view === 'expenses' ? <ExpenseDashboard onBack={() => navigate('overview')} /> : view === 'cards' ? <CreditCardDashboard onBack={() => navigate('overview')} onOpenAdvisor={() => { setAssistant(prev => ({ ...prev, scope: 'cards' })); navigate('advisor'); }} /> : view === 'market' ? <MarketDashboard onBack={() => navigate('overview')} /> : <FinanceAssistant workspace={assistant} setWorkspace={setAssistant} />}
         </Suspense></ErrorBoundary>
         <footer className="dashboard-footer"><span>FinSight AI · A clearer view of your finances</span><span>{demo ? 'Illustrative data · October 2026' : 'Insights are informational, not financial advice.'}</span></footer>
       </main>
