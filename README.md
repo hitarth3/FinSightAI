@@ -144,3 +144,16 @@ out of committed client configuration. This is a local stdio server, not a publi
 HTTP MCP endpoint. The existing application settings validation still applies.
 Implementation references: [official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 and [Groq JSON output](https://console.groq.com/docs/structured-outputs).
+
+## Login cannot reach the server
+
+The frontend on port 5173 requires the backend on port 8000. Running only
+`npm --prefix frontend run dev` does not start authentication or other APIs.
+From the project root, use `bash run.sh` to start both together. It checks API
+readiness before starting the UI and stops both when you press Ctrl+C. Stop any
+separately started frontend/backend processes before using this launcher.
+
+Check `http://127.0.0.1:8000/api/health/ready` if login cannot connect. A stopped
+backend is different from an incorrect password; restarting only the frontend
+will not restore authentication. After intentionally stopping the servers, start
+both again with `bash run.sh` before trying to sign in.

@@ -1,7 +1,7 @@
 import { LoginRequest, LoginResponse, OtpVerificationRequest, UserProfile } from '../types/authTypes';
 import { securityLogger } from '../../../utils/securityLogger';
 
-import { API_BASE, publicFetch } from '../../../services/apiClient';
+import { API_BASE, ApiError, publicFetch } from '../../../services/apiClient';
 
 export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -84,7 +84,7 @@ export const authService = {
       };
     } catch (err) {
       securityLogger.log('LOGIN_FAILURE', `Network error during login for ${email}`);
-      return { success: false, error: 'Failed to connect to authentication server.' };
+      return { success: false, error: err instanceof ApiError ? err.message : 'The authentication server returned an invalid response. Please try again.' };
     }
   },
 
