@@ -209,37 +209,25 @@ async def get_latest_stock_analysis(
     )
 
 
-@router.post("/analysis", response_model=StandardResponse[StockAnalysisResponse], status_code=status.HTTP_201_CREATED)
-async def save_stock_analysis(
-    payload: StockAnalysisCreate,
-    db: AsyncSession = Depends(get_db)
-) -> Any:
-    """Saves a new AI analysis report to the Supabase database."""
-    service = StockService(db)
-    analysis = await service.create_analysis(payload.model_dump())
-    return StandardResponse(
-        success=True,
-        message="AI stock analysis saved successfully.",
-        data=StockAnalysisResponse.model_validate(analysis)
-    )
-
-
 @router.post("/analysis/trigger/{symbol}", response_model=StandardResponse[Dict[str, Any]])
 async def trigger_stock_analysis(
     symbol: str,
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ) -> Any:
-    """Triggers the live n8n webhook analysis from backend proxy to avoid client CORS constraints."""
+    """Generates and persists a report using the shared research engine."""
+    from services.stock_report import MarketDataUnavailable
     service = StockService(db)
     try:
-        data = await service.trigger_n8n_analysis(symbol)
+        data = await service.generate_analysis(symbol)
         return StandardResponse(
             success=True,
-            message=f"n8n AI Analysis trigger succeeded for {symbol.upper()}.",
+            message=f"Stock report generated for {symbol.upper()}.",
             data=data
         )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
-        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except MarketDataUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="Unable to save the stock report. Please retry.") from exc

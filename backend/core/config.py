@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: Optional[str] = None
     AI_PROVIDER: str = "groq"
     YAHOO_FINANCE_API_KEY: Optional[str] = None
-    N8N_ANALYTIC_WEBHOOK_URL: Optional[str] = None
+    STOCK_REPORT_MODEL: str = "llama-3.3-70b-versatile"
     CORS_ALLOWED_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174"
     SUPABASE_URL: Optional[str] = None
     SUPABASE_ANON_KEY: Optional[str] = None

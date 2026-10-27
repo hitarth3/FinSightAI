@@ -313,52 +313,11 @@ class StockService:
         repo = StockAnalysisRepository(self.db)
         return await repo.create(obj_in)
 
-    async def trigger_n8n_analysis(self, symbol: str) -> Dict[str, Any]:
-        """Triggers the n8n AI Analysis Webhook from the backend proxy to bypass CORS."""
-        import httpx
-        from core.config import settings
-        
-        url = settings.N8N_ANALYTIC_WEBHOOK_URL
-        if not url:
-            raise Exception("n8n analytic webhook URL is not configured.")
-            
-        payload = {"symbol": symbol.strip().upper()}
-        print(f"DEBUG [n8n trigger]: Sending POST to {url} with payload={payload}")
-        async with httpx.AsyncClient() as client:
-            response = await client.post(url, json=payload, timeout=45.0)
-            print(f"DEBUG [n8n trigger]: Response status_code={response.status_code}")
-            print(f"DEBUG [n8n trigger]: Raw response text:\n{response.text}")
-            
-            if response.status_code != 200:
-                try:
-                    err_json = response.json()
-                    err_msg = err_json.get("message") or err_json.get("detail") or response.text
-                except Exception:
-                    err_msg = response.text
-                raise Exception(f"n8n webhook error {response.status_code}: {err_msg}")
-            
-            try:
-                data = response.json()
-                print(f"DEBUG [n8n trigger]: Successfully parsed JSON: {data}")
-                if isinstance(data, list) and len(data) > 0:
-                    return data[0]
-                return data
-            except Exception as e:
-                print(f"DEBUG [n8n trigger]: Direct JSON parsing failed ({e}). Checking lines...")
-                # If n8n returned multiple newline-separated JSON objects (due to multiple item executions),
-                # extract and parse the first valid JSON object.
-                import json
-                lines = [line.strip() for line in response.text.split("\n") if line.strip()]
-                if lines:
-                    try:
-                        parsed = json.loads(lines[0])
-                        print(f"DEBUG [n8n trigger]: Successfully parsed first JSON line: {parsed}")
-                        if isinstance(parsed, list) and len(parsed) > 0:
-                            return parsed[0]
-                        return parsed
-                    except Exception as le:
-                        print(f"DEBUG [n8n trigger]: Failed to parse first JSON line ({le})")
-                raise
+    async def generate_analysis(self, symbol: str) -> Dict[str, Any]:
+        from services.stock_report import generate_report
+        report = await generate_report(symbol)
+        await self.create_analysis(report.model_dump())
+        return report.model_dump(mode="json")
 
     async def fetch_stock_quotes_batch(self, symbols: List[str], force_refresh: bool = False) -> Dict[str, Any]:
         """Fetches live stock quotes for multiple symbols in a single batch request using yfinance, with caching."""

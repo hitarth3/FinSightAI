@@ -165,6 +165,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
 
   return (
     <GlassCard className="p-6 space-y-6 hover:border-[var(--primary-color)]/10 transition-all duration-300">
+      {analysis.stale && <p role="status" className="text-sm text-amber-500">{analysis.warning}</p>}
       {/* Panel Header */}
       <div className="flex justify-between items-start pb-4 border-b border-[var(--border-color)] gap-4">
         <div>
@@ -172,7 +173,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
             <h4 className="text-lg font-black text-[var(--text-primary)]">
               {analysis.symbol}
             </h4>
-            <GlassBadge variant="cyan">AI Intelligence</GlassBadge>
+            <GlassBadge variant="cyan">Stock Research</GlassBadge>
           </div>
           <span className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-secondary)]/50 flex items-center gap-1.5 mt-0.5">
             <Calendar className="w-3.5 h-3.5" /> Generated: {formatTimestamp(analysis.analysisGeneratedAt)}
@@ -220,7 +221,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
           </div>
 
           <div>
-            <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block">AI Strength</span>
+            <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block">Trend Strength</span>
             <span className={`text-xs font-black capitalize ${scoreColorClass}`}>
               {scoreLevel} Score
             </span>
@@ -301,8 +302,8 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
         </div>
 
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
-          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">AI Confidence</span>
-          <span className="font-bold text-[var(--text-primary)]">{analysis.confidence}%</span>
+          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">Confidence</span>
+          <span className="font-bold text-[var(--text-primary)]">{analysis.confidence === 0 ? 'Not estimated' : `${analysis.confidence}%`}</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
@@ -314,7 +315,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
       {/* Summary */}
       <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-1.5">
         <span className="text-[9px] uppercase font-extrabold tracking-widest text-[var(--text-secondary)]/40 block">
-          AI Analysis Summary
+          Analysis Summary
         </span>
         <p className="text-xs text-[var(--text-primary)]/85 leading-relaxed whitespace-pre-wrap">
           {analysis.summary}
