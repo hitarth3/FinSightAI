@@ -33,6 +33,10 @@ for command in node npm curl; do
         exit 1
     fi
 done
+if ! command -v tesseract >/dev/null 2>&1; then
+    echo "Receipt image OCR unavailable: install Tesseract (macOS: brew install tesseract)."
+    echo "Unreadable receipts will require manual entry. See README.md."
+fi
 if ! node -e 'const [major, minor] = process.versions.node.split(".").map(Number); process.exit(major > 22 || (major === 22 && minor >= 13) ? 0 : 1)'; then
     echo "Node.js 22.13 or newer is required. Current version: $(node --version)"
     exit 1

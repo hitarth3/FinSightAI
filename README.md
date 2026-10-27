@@ -188,3 +188,17 @@ The normal frontend timeout remains 30 seconds; assistant calls allow 60 seconds
 and stock report generation 90 seconds. These limits do not guarantee upstream
 provider availability. A successful build/test suite is not a production security
 review or an exhaustive browser test of every populated account and upload type.
+
+### Receipt OCR prerequisites
+
+Image receipts require the **Tesseract executable**, in addition to the Python
+packages. On macOS install it with `brew install tesseract`; on Debian/Ubuntu use
+`sudo apt-get install tesseract-ocr tesseract-ocr-eng`. Verify with
+`tesseract --version` in the same terminal used to start the backend. The backend
+Docker image already includes English OCR support.
+
+Receipt text parsing tries configured Gemini, Grok, and Groq providers in order,
+continuing to the next provider on failure, then uses a local text parser.
+A rejected Gemini key does not prevent a configured Groq key from being used.
+An unreadable receipt returns zero confidence for manual review; filenames never
+supply transaction data. Review the amount and date before confirming an expense.

@@ -19,6 +19,9 @@ class GrokService:
         If GOOGLE_API_KEY is configured, it prioritizes Google Gemini.
         If neither GOOGLE_API_KEY, GROK_API_KEY, nor GROQ_API_KEY is set or request fails, falls back to a deterministic regex parser.
         """
+        if not receipt_text.strip():
+            return GrokService._simulate_parsing("")
+
         google_key = settings.GOOGLE_API_KEY
         grok_key = settings.GROK_API_KEY
         groq_key = settings.GROQ_API_KEY
@@ -58,16 +61,16 @@ class GrokService:
                     if response.status_code == 200:
                         data = response.json()
                         content = data["choices"][0]["message"]["content"]
-                        logger.info(f"Gemini API Response: {content}")
+                        logger.info("Receipt parser returned a response")
                         parsed = GrokService._clean_and_parse_json(content, receipt_text)
                         if parsed:
                             return parsed
                     else:
-                        logger.error(f"Gemini API failed with status {response.status_code}: {response.text}")
+                        logger.error(f"Gemini API failed with status {response.status_code}")
             except Exception as e:
                 logger.error(f"Exception during Gemini API call: {e}")
                 
-        elif grok_key:
+        if grok_key:
             logger.info("GROK_API_KEY found. Querying Grok API...")
             try:
                 async with httpx.AsyncClient(timeout=15.0) as client:
@@ -89,16 +92,16 @@ class GrokService:
                     if response.status_code == 200:
                         data = response.json()
                         content = data["choices"][0]["message"]["content"]
-                        logger.info(f"Grok API Response: {content}")
+                        logger.info("Receipt parser returned a response")
                         parsed = GrokService._clean_and_parse_json(content, receipt_text)
                         if parsed:
                             return parsed
                     else:
-                        logger.error(f"Grok API failed with status {response.status_code}: {response.text}")
+                        logger.error(f"Grok API failed with status {response.status_code}")
             except Exception as e:
                 logger.error(f"Exception during Grok API call: {e}")
                 
-        elif groq_key:
+        if groq_key:
             logger.info("GROQ_API_KEY found. Querying Groq API...")
             try:
                 async with httpx.AsyncClient(timeout=15.0) as client:
@@ -121,12 +124,12 @@ class GrokService:
                     if response.status_code == 200:
                         data = response.json()
                         content = data["choices"][0]["message"]["content"]
-                        logger.info(f"Groq API Response: {content}")
+                        logger.info("Receipt parser returned a response")
                         parsed = GrokService._clean_and_parse_json(content, receipt_text)
                         if parsed:
                             return parsed
                     else:
-                        logger.warning(f"Groq API primary model failed with status {response.status_code}: {response.text}. Trying fallback model...")
+                        logger.warning(f"Groq API primary model failed with status {response.status_code}. Trying fallback model...")
                         # Try the configured fallback model
                         response_fallback = await client.post(
                             "https://api.groq.com/openai/v1/chat/completions",
@@ -147,17 +150,16 @@ class GrokService:
                         if response_fallback.status_code == 200:
                             data = response_fallback.json()
                             content = data["choices"][0]["message"]["content"]
-                            logger.info(f"Groq API Fallback Response: {content}")
+                            logger.info("Receipt parser returned a response")
                             parsed = GrokService._clean_and_parse_json(content, receipt_text, is_fallback_api=True)
                             if parsed:
                                 return parsed
                         else:
-                            logger.error(f"Groq API fallback failed: {response_fallback.status_code} - {response_fallback.text}")
+                            logger.error(f"Groq API fallback failed: {response_fallback.status_code}")
             except Exception as e:
                 logger.error(f"Exception during Groq API call: {e}")
                 
-        else:
-            logger.info("Neither GOOGLE_API_KEY, GROK_API_KEY nor GROQ_API_KEY found in environment. Falling back to local parser simulation.")
+        logger.info("No provider produced a receipt result; using the local text parser.")
             
         return GrokService._simulate_parsing(receipt_text)
  
@@ -256,43 +258,25 @@ class GrokService:
         category = "MISCELLANEOUS"
         amount = 0.0
         
-        if "swiggy" in text_lower:
-            merchant = "Swiggy"
-            category = "FOOD"
-            amount = 432.0
-        elif "amazon" in text_lower:
-            merchant = "Amazon"
-            category = "SHOPPING"
-            amount = 9500.0
-        elif "uber" in text_lower:
-            merchant = "Uber"
-            category = "TRAVEL"
-            amount = 320.0
-        elif "netflix" in text_lower:
-            merchant = "Netflix"
-            category = "SUBSCRIPTION"
-            amount = 499.0
-        else:
-            # Grab first non-empty line as merchant name
-            lines = [l.strip() for l in text.split("\n") if l.strip()]
-            if lines:
-                merchant = lines[0][:50]
-                
-            # Extract amount from text
-            amount_matches = re.findall(r"(?:rs|₹|usd|\$)\s*([\d,]+\.?\d*)", text_lower)
-            if amount_matches:
-                try:
-                    amount = float(amount_matches[0].replace(",", ""))
-                except ValueError:
-                    pass
-            else:
-                numbers = re.findall(r"\b\d+\.\d{2}\b", text_lower)
-                if numbers:
-                    amount = float(numbers[0])
-                else:
-                    ints = re.findall(r"\b\d{2,5}\b", text_lower)
-                    if ints:
-                        amount = float(ints[0])
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        merchant = lines[0][:50] if lines else None
+        for name, matched_category in (("swiggy", "FOOD"), ("amazon", "SHOPPING"),
+                                       ("uber", "TRAVEL"), ("netflix", "SUBSCRIPTION")):
+            if name in text_lower:
+                category = matched_category
+                break
+        # Prefer an explicitly labelled total. Never infer amounts from a
+        # merchant name, date, telephone number or receipt identifier.
+        totals = re.findall(
+            r"(?:grand\s+total|amount\s+(?:paid|due)|total)\s*[:=]?\s*(?:rs\.?|inr|₹|usd|\$)?\s*([\d,]+(?:\.\d{1,2})?)",
+            text_lower,
+        )
+        amounts = totals or re.findall(r"(?:rs\.?|inr|₹|usd|\$)\s*([\d,]+(?:\.\d{1,2})?)", text_lower)
+        if amounts:
+            try:
+                amount = float(amounts[-1].replace(",", ""))
+            except ValueError:
+                pass
 
         date_str = datetime.utcnow().date().isoformat()
         date_matches = re.findall(r"\b(\d{2})[-/](\d{2})[-/](\d{4})\b", text_lower)

@@ -161,16 +161,7 @@ class OCRService:
 
     @staticmethod
     def _get_fallback_text(file_path: str, original_filename: str = None) -> str:
-        base = os.path.basename(file_path).lower()
-        orig = (original_filename or "").lower()
-        
-        if "swiggy" in base or "swiggy" in orig:
-            return "SWIGGY\nOrder Total ₹432\nDate 01/06/2026\nCategory Food"
-        if "amazon" in base or "amazon" in orig:
-            return "AMAZON RETAIL\nTotal USD 9500\nDate 02/06/2026\nCategory Shopping"
-        if "uber" in base or "uber" in orig:
-            return "UBER TRIP\nTotal ₹320\nDate 03/06/2026\nCategory Travel"
-        # Return empty string instead of mock values for real user uploads
+        # Unreadable files need manual review; filenames are never evidence.
         return ""
 
     @staticmethod
