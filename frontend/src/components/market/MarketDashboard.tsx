@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { stockService, MarketIndex, StockData } from '../../services/stockService';
 import { stockAnalysisService, StockAnalysis } from '../../services/stockAnalysisService';
+import { SectionNav } from '../ui/SectionNav';
 import { IndicesSection } from './IndicesSection';
 import { MoversWidget } from './MoversWidget';
 import { StockTables } from './StockTables';
@@ -28,6 +29,7 @@ interface MarketDashboardProps {
 }
 
 export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
+  const [section, setSection] = useState<'watchlist' | 'discover'>('watchlist');
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [newsRefreshTrigger, setNewsRefreshTrigger] = useState<number>(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -122,7 +124,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
     return [...rankings].sort((a, b) => {
       if (sortBy === 'strength') return b.strengthScore - a.strengthScore;
       if (sortBy === 'confidence') return b.confidence - a.confidence;
-      if (sortBy === 'sentiment') return a.sentiment.localeCompare(b.sentiment);
+      if (sortBy === 'sentiment') { const order = ['Positive', 'Neutral', 'Mixed', 'Negative', 'Unavailable']; return (order.indexOf(a.sentiment) < 0 ? 5 : order.indexOf(a.sentiment)) - (order.indexOf(b.sentiment) < 0 ? 5 : order.indexOf(b.sentiment)); }
       return 0;
     });
   };
@@ -175,22 +177,9 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
           {/* Indices Section */}
           <IndicesSection indices={indices} isLoading={isLoading} />
 
-          {/* Core Grid: movers & leaderboards */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-3">
-              <StockTables 
-                gainers={gainers} 
-                losers={losers} 
-                mostActive={mostActive} 
-                isLoading={isLoading} 
-                onStockClick={handleStockClick} 
-              />
-            </div>
-            <div className="lg:col-span-1">
-              <MoversWidget movers={movers} isLoading={isLoading} />
-            </div>
-          </div>
-
+          <SectionNav<'watchlist' | 'discover'> label="Market sections" value={section} onChange={setSection}
+            items={[{ value: 'watchlist', label: 'Watchlist & research' }, { value: 'discover', label: 'Discover' }]} />
+          {section === 'watchlist' && <>
           {/* Watchlist & AI Stock Intelligence Section */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Watchlist Widget */}
@@ -244,7 +233,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                             : 'bg-[var(--surface-muted)] hover:bg-[var(--surface-subtle)] border-transparent'
                         }`}
                       >
-                        <div 
+                        <button type="button"
                           onClick={() => handleStockClick(item.symbol)}
                           className="cursor-pointer truncate max-w-[55%] text-left"
                         >
@@ -254,7 +243,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                           <div className="text-[9px] text-[var(--text-secondary)]/50 truncate">
                             {item.company_name}
                           </div>
-                        </div>
+                        </button>
 
                         <GlassButton
                           variant={activeAnalysisSymbol === item.symbol ? 'primary' : 'outline'}
@@ -282,7 +271,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                       className="bg-black/40 text-[9px] font-bold border border-[var(--border-color)] rounded px-1.5 py-0.5 text-[var(--text-primary)] focus:outline-none"
                     >
                       <option value="strength">Score</option>
-                      <option value="confidence">Confidence</option>
+                      <option value="confidence">Evidence confidence</option>
                       <option value="sentiment">Sentiment</option>
                     </select>
                   </div>
@@ -302,7 +291,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                         </span>
                         <span className="font-bold text-success">
                           {sortBy === 'strength' && `${r.strengthScore}`}
-                          {sortBy === 'confidence' && `${r.confidence}%`}
+                          {sortBy === 'confidence' && `${r.confidence}/100`}
                           {sortBy === 'sentiment' && `${r.sentiment}`}
                         </span>
                       </button>
@@ -318,13 +307,26 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Lower Grid: News feed */}
-          <div className="w-full">
-            <h3 className="text-base font-extrabold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-[var(--primary-color)]" /> Sample news feed
-            </h3>
-            <MarketNewsFeed onStockClick={handleStockClick} refreshTrigger={newsRefreshTrigger} />
+          </>}
+          {section === 'discover' && <>
+          {/* Core Grid: movers & leaderboards */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-3">
+              <StockTables 
+                gainers={gainers} 
+                losers={losers} 
+                mostActive={mostActive} 
+                isLoading={isLoading} 
+                onStockClick={handleStockClick} 
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <MoversWidget movers={movers} isLoading={isLoading} />
+            </div>
           </div>
+
+          </>}
+
         </>
       )}
 

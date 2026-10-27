@@ -190,8 +190,18 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
           className="py-1.5 px-3 text-xs shrink-0"
         >
           <RefreshCw className="w-3.5 h-3.5 mr-1" />
-          <span>Refresh</span>
+          <span>Refresh report</span>
         </GlassButton>
+      </div>
+
+      {/* Summary */}
+      <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-1.5">
+        <span className="text-[9px] uppercase font-extrabold tracking-widest text-[var(--text-secondary)]/40 block">
+          Analysis Summary
+        </span>
+        <p className="text-xs text-[var(--text-primary)]/85 leading-relaxed whitespace-pre-wrap">
+          {analysis.summary}
+        </p>
       </div>
 
       {/* Strength & Recommendation cards */}
@@ -235,7 +245,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
         {/* Recommendation card */}
         <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] flex flex-col justify-center">
           <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-1">
-            Recommendation
+            Technical signal
           </span>
           <div>
             <GlassBadge variant={recVariant} className="text-xs font-black">
@@ -316,9 +326,10 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
         </div>
       </div>
 
-      <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-3">
+      <details className="report-disclosure">
+        <summary>Confidence breakdown</summary>
         <div>
-          <h5 className="text-xs font-bold text-[var(--text-primary)]">Confidence breakdown</h5>
+          <h5 className="text-xs font-bold text-[var(--text-primary)]">How this score is calculated</h5>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
             Measures evidence coverage and freshness, not the probability of profit or prediction accuracy.
           </p>
@@ -326,14 +337,15 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
         {analysis.evidence?.confidence_components && <div className="flex flex-wrap gap-2">
           {Object.entries(analysis.evidence.confidence_components).map(([name, value]) => (
             <span key={name} className="text-xs px-2 py-1 rounded bg-[var(--surface-raised)] text-[var(--text-primary)]">
-              {name.replaceAll('_', ' ')}: {value}
+              {({ history: 'History coverage', price_recency: 'Price freshness', news_coverage: 'News coverage', source_diversity: 'Source diversity', sentiment_method: 'Analysis method' } as Record<string, string>)[name] || name}: {value}
             </span>
           ))}
         </div>}
         <p className="text-xs text-[var(--text-secondary)]">{analysis.evidence?.recommendation_method}</p>
-      </div>
+      </details>
 
-      <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-3">
+      <details className="report-disclosure">
+        <summary>News sources ({analysis.evidence?.news?.length || 0})</summary>
         <div>
           <h5 className="text-xs font-bold text-[var(--text-primary)]">News behind the sentiment</h5>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
@@ -353,17 +365,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
             ))}
           </ul>
         ) : <p className="text-xs text-[var(--text-secondary)]">No recent verified headlines available. Refresh to retry.</p>}
-      </div>
-
-      {/* Summary */}
-      <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-1.5">
-        <span className="text-[9px] uppercase font-extrabold tracking-widest text-[var(--text-secondary)]/40 block">
-          Analysis Summary
-        </span>
-        <p className="text-xs text-[var(--text-primary)]/85 leading-relaxed whitespace-pre-wrap">
-          {analysis.summary}
-        </p>
-      </div>
+      </details>
 
       {/* Optional: Score Breakdown for Future Scoring Modules */}
       {(analysis.technicalScore !== undefined || analysis.newsScore !== undefined || analysis.fundamentalScore !== undefined) && (

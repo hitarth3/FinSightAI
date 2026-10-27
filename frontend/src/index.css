@@ -606,3 +606,7 @@ button { touch-action: manipulation; }
 .assistant-composer-footer span, .assistant-footnote { font-size: 12px; color: var(--text-secondary); }
 .assistant-footnote { padding: 0 24px 16px; line-height: 1.6; }
 @media (max-width: 767px) { .assistant-toolbar { padding: 16px; align-items: flex-end; }.assistant-context { gap: 6px; }.assistant-context select { max-width: 190px; }.assistant-context-note { padding: 0 16px 14px; }.assistant-conversation { padding: 16px; min-height: 300px; height: 45dvh; }.assistant-welcome { margin: 24px auto; }.assistant-welcome h2 { font-size: 21px; }.assistant-starters { flex-direction: column; }.assistant-composer { padding: 14px 16px; }.assistant-composer-footer span { max-width: 180px; }.assistant-footnote { padding-inline: 16px; } }
+.report-disclosure { border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; }
+.report-disclosure > summary { cursor: pointer; font-size: 14px; font-weight: 600; min-height: 28px; }
+.report-disclosure[open] > summary { margin-bottom: 16px; }
+.report-disclosure > div, .report-disclosure > ul { margin-bottom: 12px; }

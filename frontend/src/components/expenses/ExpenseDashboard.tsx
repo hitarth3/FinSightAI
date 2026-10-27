@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { expenseService } from '../../services/expenseService';
+import { SectionNav } from '../ui/SectionNav';
 import { ExpenseSummaryCards } from './ExpenseSummaryCards';
 import { ExpenseAnalytics } from './ExpenseAnalytics';
 import { ExpenseTable } from './ExpenseTable';
@@ -20,6 +21,7 @@ interface ExpenseDashboardProps {
 }
 
 export const ExpenseDashboard: React.FC<ExpenseDashboardProps> = ({ onBack }) => {
+  const [section, setSection] = useState<'transactions' | 'analytics'>('transactions');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
@@ -33,6 +35,9 @@ export const ExpenseDashboard: React.FC<ExpenseDashboardProps> = ({ onBack }) =>
       {/* Summary Cards */}
       <ExpenseSummaryCards onAddExpenseClick={() => setIsAddOpen(true)} />
 
+      <SectionNav<'transactions' | 'analytics'> label="Expense sections" value={section} onChange={setSection}
+        items={[{ value: 'transactions', label: 'Transactions' }, { value: 'analytics', label: 'Analytics' }]} />
+      {section === 'analytics' && <>
       {/* Analytics (Breakdown + Trend) */}
       <ExpenseAnalytics />
 
@@ -42,6 +47,8 @@ export const ExpenseDashboard: React.FC<ExpenseDashboardProps> = ({ onBack }) =>
         <TopMerchantsCard />
       </div>
 
+      </>}
+      {section === 'transactions' && <>
       {/* Transaction History Grid */}
       {isLoading ? (
         <LoadingSkeleton shape="rows" rows={5} />
@@ -51,6 +58,7 @@ export const ExpenseDashboard: React.FC<ExpenseDashboardProps> = ({ onBack }) =>
         <ExpenseTable expenses={expenses} onViewDetails={(exp) => setSelectedExpense(exp)} />
       )}
 
+      </>}
       {/* Modals */}
       <AddExpenseModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} />
       
