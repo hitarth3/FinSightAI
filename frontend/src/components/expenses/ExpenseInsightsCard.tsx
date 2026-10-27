@@ -48,7 +48,7 @@ export const ExpenseInsightsCard: React.FC = () => {
     <GlassCard className="flex flex-col h-full justify-between" glow>
       <div>
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-[var(--border-color)]">
-          <h4 className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]/60 flex items-center gap-1.5">
+          <h4 className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] flex items-center gap-1.5">
             <Brain className="w-3.5 h-3.5 text-[var(--primary-color)]" /> AI Expense Insights
           </h4>
         </div>

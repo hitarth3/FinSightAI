@@ -14,33 +14,33 @@ const CatalogCard: React.FC<{ card: RecommendedCardItem; isBest?: boolean }> = (
       {isBest && (
         <div className="flex items-center gap-1.5 mb-1">
           <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-          <span className="text-[9px] uppercase font-black tracking-widest text-yellow-400">AI Recommended</span>
+          <span className="text-xs uppercase font-black tracking-widest text-yellow-400">AI Recommended</span>
         </div>
       )}
 
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <h4 className="font-black text-[var(--text-primary)] text-sm leading-tight">{card.bank_name}</h4>
-          <p className="text-[10px] text-[var(--text-secondary)] font-semibold mt-0.5 leading-tight">{card.card_name}</p>
+          <p className="text-xs text-[var(--text-secondary)] font-semibold mt-0.5 leading-tight">{card.card_name}</p>
         </div>
-        <GlassBadge variant={card.reward_type === 'cashback' ? 'success' : 'neutral'} className="shrink-0 text-[8px]">
+        <GlassBadge variant={card.reward_type === 'cashback' ? 'success' : 'neutral'} className="shrink-0 text-xs">
           {card.reward_type}
         </GlassBadge>
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-center border-y border-[var(--border-color)] py-3">
         <div>
-          <p className="text-[8px] uppercase tracking-wider text-[var(--text-secondary)]/50 font-bold">Annual Fee</p>
+          <p className="text-xs  text-[var(--text-secondary)] font-bold">Annual Fee</p>
           <p className="text-xs font-black text-[var(--text-primary)] mt-0.5">
             {card.annual_fee === 0 ? 'Free' : `₹${card.annual_fee.toLocaleString('en-IN')}`}
           </p>
         </div>
         <div>
-          <p className="text-[8px] uppercase tracking-wider text-[var(--text-secondary)]/50 font-bold">Annual Rewards</p>
+          <p className="text-xs  text-[var(--text-secondary)] font-bold">Annual Rewards</p>
           <p className="text-xs font-black text-emerald-400 mt-0.5">₹{card.estimated_annual_rewards.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
         </div>
         <div>
-          <p className="text-[8px] uppercase tracking-wider text-[var(--text-secondary)]/50 font-bold">Net Benefit</p>
+          <p className="text-xs  text-[var(--text-secondary)] font-bold">Net Benefit</p>
           <p className={`text-xs font-black mt-0.5 ${card.net_benefit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             ₹{card.net_benefit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </p>
@@ -52,7 +52,7 @@ const CatalogCard: React.FC<{ card: RecommendedCardItem; isBest?: boolean }> = (
           href={card.official_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-[10px] font-semibold text-[var(--primary-color)] hover:opacity-80 transition-opacity"
+          className="flex items-center gap-1.5 text-xs font-semibold text-[var(--primary-color)] hover:opacity-80 transition-opacity"
         >
           <ExternalLink className="w-3 h-3" /> Apply Online
         </a>
@@ -102,7 +102,7 @@ export const CardRecommendations: React.FC = () => {
               <Brain className="w-4 h-4 text-[var(--primary-color)]" />
             </div>
             <div>
-              <p className="text-[9px] uppercase font-bold tracking-widest text-[var(--primary-color)] mb-1">Advisor Reasoning</p>
+              <p className="text-xs uppercase font-bold tracking-widest text-[var(--primary-color)] mb-1">Advisor Reasoning</p>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed italic">"{data.reasoning}"</p>
             </div>
           </div>
@@ -112,7 +112,7 @@ export const CardRecommendations: React.FC = () => {
       {/* Best Recommendation */}
       {data?.recommended_card && (
         <div>
-          <p className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50 mb-3">
+          <p className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] mb-3">
             🏆 Top Recommendation
           </p>
           <CatalogCard card={data.recommended_card} isBest />
@@ -123,8 +123,8 @@ export const CardRecommendations: React.FC = () => {
       {data?.all_catalog_options && data.all_catalog_options.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-3.5 h-3.5 text-[var(--text-secondary)]/50" />
-            <p className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">
+            <TrendingUp className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+            <p className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">
               Full Card Catalog Ranking
             </p>
           </div>
@@ -146,7 +146,7 @@ export const CardRecommendations: React.FC = () => {
             </div>
             <div>
               <p className="text-sm font-bold text-[var(--text-primary)] mb-1">No Analysis Run Yet</p>
-              <p className="text-xs text-[var(--text-secondary)]/50 max-w-xs mx-auto leading-relaxed">
+              <p className="text-xs text-[var(--text-secondary)] max-w-xs mx-auto leading-relaxed">
                 Click "Run Analysis" to let the AI scan your spending profile and recommend the highest-yield card upgrade.
               </p>
             </div>

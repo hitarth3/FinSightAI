@@ -76,11 +76,11 @@ export const StockSearchPanel: React.FC<StockSearchPanelProps> = ({ onStockSelec
                     </div>
                     <div className="truncate">
                       <div className="text-xs font-black text-[var(--text-primary)]">{stock.symbol}</div>
-                      <div className="text-[9px] text-[var(--text-secondary)]/60 truncate">{stock.companyName}</div>
+                      <div className="text-xs text-[var(--text-secondary)] truncate">{stock.companyName}</div>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[var(--surface-subtle)] border border-[var(--border-color)] text-[var(--text-secondary)]">
+                    <span className="text-xs uppercase font-bold px-2 py-0.5 rounded bg-[var(--surface-subtle)] border border-[var(--border-color)] text-[var(--text-secondary)]">
                       {stock.exchange || 'NSE'}
                     </span>
                   </div>
@@ -92,7 +92,7 @@ export const StockSearchPanel: React.FC<StockSearchPanelProps> = ({ onStockSelec
       )}
 
       {query && results.length === 0 && !isSearching && (
-        <div className="absolute top-full left-0 right-0 mt-2 z-30 glass-panel rounded-2xl p-4 text-center text-xs text-[var(--text-secondary)]/60 border border-[var(--border-color)]">
+        <div className="absolute top-full left-0 right-0 mt-2 z-30 glass-panel rounded-2xl p-4 text-center text-xs text-[var(--text-secondary)] border border-[var(--border-color)]">
           No matching company or symbol found.
         </div>
       )}

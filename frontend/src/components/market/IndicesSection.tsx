@@ -32,7 +32,7 @@ export const IndicesSection: React.FC<IndicesSectionProps> = ({ indices, isLoadi
             className="py-4 px-5 flex flex-col justify-between h-24 hover:border-[var(--primary-color)]/20 transition-all duration-300"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">
+              <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">
                 {idx.name}
               </span>
               <div className={`p-1 rounded ${isUp ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>

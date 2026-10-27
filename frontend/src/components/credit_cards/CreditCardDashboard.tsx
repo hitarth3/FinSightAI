@@ -51,10 +51,10 @@ export const CreditCardDashboard: React.FC<CreditCardDashboardProps> = ({ onBack
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
+            <h3 className="text-sm font-extrabold text-[var(--text-primary)] ">
               My Cards Catalog
             </h3>
-            <span className="text-[10px] text-[var(--text-secondary)]/40 font-mono font-medium">
+            <span className="text-xs text-[var(--text-secondary)] font-mono font-medium">
               Total Cards: {cards?.length || 0}
             </span>
           </div>

@@ -58,7 +58,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
       <GlassCard className="p-8 text-center border-[var(--border-color)] h-full flex flex-col items-center justify-center min-h-[300px]">
         <Sparkles className="w-10 h-10 text-[var(--text-secondary)]/30 mb-3" />
         <h4 className="text-sm font-bold text-[var(--text-primary)] mb-1">No Active AI Report</h4>
-        <p className="text-xs text-[var(--text-secondary)]/60 max-w-xs mx-auto">
+        <p className="text-xs text-[var(--text-secondary)] max-w-xs mx-auto">
           Select a stock from your watchlist to generate an AI report.
         </p>
       </GlassCard>
@@ -103,7 +103,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
         </p>
         
         {/* Error Details */}
-        <div className="w-full max-w-md p-3 rounded-lg bg-black/30 border border-[var(--border-color)] text-[10px] font-mono text-left text-red-300 mb-5 overflow-x-auto whitespace-pre-wrap">
+        <div className="w-full max-w-md p-3 rounded-lg bg-black/30 border border-[var(--border-color)] text-xs font-mono text-left text-red-300 mb-5 overflow-x-auto whitespace-pre-wrap">
           {error}
         </div>
 
@@ -179,7 +179,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
             </h4>
             <GlassBadge variant="cyan">Stock Research</GlassBadge>
           </div>
-          <span className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-secondary)]/50 flex items-center gap-1.5 mt-0.5">
+          <span className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)] flex items-center gap-1.5 mt-0.5">
             <Calendar className="w-3.5 h-3.5" /> Generated: {formatTimestamp(analysis.analysisGeneratedAt)}
           </span>
         </div>
@@ -196,7 +196,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
 
       {/* Summary */}
       <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-1.5">
-        <span className="text-[9px] uppercase font-extrabold tracking-widest text-[var(--text-secondary)]/40 block">
+        <span className="text-xs uppercase font-extrabold tracking-widest text-[var(--text-secondary)] block">
           Analysis Summary
         </span>
         <p className="text-xs text-[var(--text-primary)]/85 leading-relaxed whitespace-pre-wrap">
@@ -235,7 +235,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
           </div>
 
           <div>
-            <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block">Trend Strength</span>
+            <span className="text-xs  text-[var(--text-secondary)] block">Trend Strength</span>
             <span className={`text-xs font-black capitalize ${scoreColorClass}`}>
               {scoreLevel} Score
             </span>
@@ -244,7 +244,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
 
         {/* Recommendation card */}
         <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] flex flex-col justify-center">
-          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-1">
+          <span className="text-xs  text-[var(--text-secondary)] block mb-1">
             Technical signal
           </span>
           <div>
@@ -263,7 +263,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
             {analysis.trend.toUpperCase() === 'BEARISH' ? <TrendingDown className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
           </div>
           <div>
-            <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block">Market Trend</span>
+            <span className="text-xs  text-[var(--text-secondary)] block">Market Trend</span>
             <span className="text-xs font-black text-[var(--text-primary)]">
               {analysis.trend}
             </span>
@@ -275,7 +275,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
       <div className="grid grid-cols-2 gap-4">
         {/* Support Levels */}
         <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)]">
-          <h5 className="text-[10px] uppercase font-bold tracking-wider text-success mb-2.5 flex items-center gap-1.5">
+          <h5 className="text-xs uppercase font-bold tracking-wider text-success mb-2.5 flex items-center gap-1.5">
             <Compass className="w-3.5 h-3.5" /> Support Levels
           </h5>
           <div className="flex gap-2">
@@ -292,7 +292,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
 
         {/* Resistance Levels */}
         <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)]">
-          <h5 className="text-[10px] uppercase font-bold tracking-wider text-error mb-2.5 flex items-center gap-1.5">
+          <h5 className="text-xs uppercase font-bold tracking-wider text-error mb-2.5 flex items-center gap-1.5">
             <LineChart className="w-3.5 h-3.5" /> Resistance Levels
           </h5>
           <div className="flex gap-2">
@@ -311,17 +311,17 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
       {/* News Sentiment & Confidence metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
-          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">News Sentiment</span>
+          <span className="text-xs  text-[var(--text-secondary)] block mb-0.5">News Sentiment</span>
           <span className="font-bold text-[var(--text-primary)] capitalize">{analysis.sentiment}</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
-          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">Evidence Confidence</span>
+          <span className="text-xs  text-[var(--text-secondary)] block mb-0.5">Evidence Confidence</span>
           <span className="font-bold text-[var(--text-primary)]">{analysis.evidence?.version === 2 ? `${analysis.confidence}/100` : 'Refresh report'}</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
-          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">Risk Level</span>
+          <span className="text-xs  text-[var(--text-secondary)] block mb-0.5">Risk Level</span>
           <span className="font-bold text-[var(--text-primary)] capitalize">{analysis.riskLevel}</span>
         </div>
       </div>
@@ -370,23 +370,23 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
       {/* Optional: Score Breakdown for Future Scoring Modules */}
       {(analysis.technicalScore !== undefined || analysis.newsScore !== undefined || analysis.fundamentalScore !== undefined) && (
         <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs space-y-2">
-          <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50 block">Score Breakdown</span>
+          <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] block">Score Breakdown</span>
           <div className="grid grid-cols-3 gap-3">
             {analysis.technicalScore !== undefined && (
               <div>
-                <span className="text-[8px] text-[var(--text-secondary)] block">Technical</span>
+                <span className="text-xs text-[var(--text-secondary)] block">Technical</span>
                 <span className="font-bold">{analysis.technicalScore}/100</span>
               </div>
             )}
             {analysis.newsScore !== undefined && (
               <div>
-                <span className="text-[8px] text-[var(--text-secondary)] block">News & Buzz</span>
+                <span className="text-xs text-[var(--text-secondary)] block">News & Buzz</span>
                 <span className="font-bold">{analysis.newsScore}/100</span>
               </div>
             )}
             {analysis.fundamentalScore !== undefined && (
               <div>
-                <span className="text-[8px] text-[var(--text-secondary)] block">Fundamentals</span>
+                <span className="text-xs text-[var(--text-secondary)] block">Fundamentals</span>
                 <span className="font-bold">{analysis.fundamentalScore}/100</span>
               </div>
             )}

@@ -15,17 +15,17 @@ export const GlassBadge: React.FC<GlassBadgeProps> = ({
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold backdrop-blur-md border tracking-wider uppercase",
+        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border",
         
-        variant === 'cyan' && "badge-cyan shadow-[0_0_8px_rgba(6,182,212,0.15)]",
+        variant === 'cyan' && "badge-cyan",
         
-        variant === 'purple' && "badge-purple shadow-[0_0_8px_rgba(168,85,247,0.15)]",
+        variant === 'purple' && "badge-purple",
         
-        variant === 'success' && "bg-success/10 border border-success/20 text-success shadow-[0_0_8px_rgba(34,197,94,0.15)]",
+        variant === 'success' && "bg-success/10 border border-success/20 text-success",
         
-        variant === 'error' && "bg-error/10 border border-error/20 text-error shadow-[0_0_8px_rgba(239,68,68,0.15)]",
+        variant === 'error' && "bg-error/10 border border-error/20 text-error",
         
-        variant === 'warning' && "badge-warning shadow-[0_0_8px_rgba(234,179,8,0.15)]",
+        variant === 'warning' && "badge-warning",
         
         variant === 'neutral' && "bg-[var(--surface-subtle)] border border-[var(--border-color)] text-[var(--text-secondary)]",
         

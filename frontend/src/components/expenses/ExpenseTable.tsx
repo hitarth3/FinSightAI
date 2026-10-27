@@ -63,7 +63,7 @@ export const ExpenseTable = ({ expenses, onViewDetails }: ExpenseTableProps) => 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:flex-initial min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]/60" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               type="text"
               aria-label="Search transactions by merchant or notes"
@@ -86,7 +86,7 @@ export const ExpenseTable = ({ expenses, onViewDetails }: ExpenseTableProps) => 
                 <option key={cat} value={cat} className="bg-[var(--bg-color)] text-[var(--text-primary)]">{label(cat)}</option>
               ))}
             </select>
-            <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-secondary)]/60 pointer-events-none" />
+            <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-secondary)] pointer-events-none" />
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@ export const ExpenseTable = ({ expenses, onViewDetails }: ExpenseTableProps) => 
                     <span className="block mt-1 text-xs font-normal capitalize text-[var(--text-secondary)]">{label(item.nature)}</span>
                   </td>
                   <td className="py-4 px-4 text-xs">
-                    <span className="text-[10px] uppercase font-semibold px-2.5 py-1 rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-color)] text-[var(--text-primary)]/80">
+                    <span className="text-xs uppercase font-semibold px-2.5 py-1 rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-color)] text-[var(--text-primary)]/80">
                       {label(item.category)}
                     </span>
                   </td>

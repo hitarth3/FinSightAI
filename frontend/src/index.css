@@ -4,15 +4,15 @@
 
 /* Custom Color Theme Variables */
 :root {
-  /* Default: Dark FinTech Theme */
-  --bg-color: #0B1120;
-  --card-bg: rgba(255, 255, 255, 0.03);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(0, 212, 255, 0.12);
-  --text-primary: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --primary-color: #00D4FF; /* Neon Cyan */
-  --secondary-color: #7C3AED; /* Purple */
+  /* Dark workspace theme */
+  --bg-color: #101c19;
+  --card-bg: #182722;
+  --border-color: #2b3b34;
+  --border-glow: #48765e;
+  --text-primary: #edf4ef;
+  --text-secondary: #a7b9ae;
+  --primary-color: #288775;
+  --secondary-color: #a6c9b3;
   --accent-glow: rgba(0, 212, 255, 0.25);
   --accent-glow-secondary: rgba(124, 58, 237, 0.18);
   --success: #22C55E;
@@ -29,32 +29,32 @@
   --icon-muted: rgba(148, 163, 184, 0.5);
   --chart-grid: rgba(255, 255, 255, 0.05);
   --chart-axis: rgba(148, 163, 184, 0.5);
-  --chart-tooltip-bg: rgba(15, 23, 42, 0.92);
+  --chart-tooltip-bg: #182722;
   --chart-tooltip-border: rgba(255, 255, 255, 0.1);
   --chart-tooltip-text: #FFFFFF;
-  
-  --mesh-1: rgba(124, 58, 237, 0.12); /* Purple */
+
+  --mesh-1: rgba(124, 58, 237, 0.12);
   --mesh-2: rgba(0, 212, 255, 0.08);   /* Cyan */
 
   /* Spacing & sizing scale */
-  --radius-card: 20px;
-  --radius-control: 12px;
-  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-control: 9px;
+  --radius-button: 9px;
   --input-height: 44px;
   --button-height: 44px;
 }
 
 :root.light-professional {
   /* Light Professional Theme */
-  --bg-color: #F8FAFC;
-  --card-bg: rgba(255, 255, 255, 0.88); /* Strong solid card background for readability */
-  --border-color: rgba(15, 23, 42, 0.14); /* Crisp, highly-defined fintech borders */
-  --border-glow: rgba(124, 58, 237, 0.14);
-  --text-primary: #0F172A; /* Slate 900 */
-  --text-secondary: #475569; /* Slate 600 */
-  --primary-color: #7C3AED; /* Purple primary */
-  --secondary-color: #0284C7; /* Sky secondary */
-  --accent-glow: rgba(124, 58, 237, 0.20); /* High-contrast purple focus glow */
+  --bg-color: #f6f8f7;
+  --card-bg: #fff; /* Strong solid card background for readability */
+  --border-color: #e5ebe7; /* Crisp, highly-defined fintech borders */
+  --border-glow: #abc7b7;
+  --text-primary: #203b32; /* Slate 900 */
+  --text-secondary: #74837c; /* Slate 600 */
+  --primary-color: #247a65;
+  --secondary-color: #91b6a4;
+  --accent-glow: #247a6520; /* High-contrast purple focus glow */
   --accent-glow-secondary: rgba(2, 132, 199, 0.12);
   --success: #16A34A;
   --error: #DC2626;
@@ -69,10 +69,10 @@
   --icon-muted: rgba(71, 85, 105, 0.55);
   --chart-grid: rgba(15, 23, 42, 0.08);
   --chart-axis: rgba(71, 85, 105, 0.65);
-  --chart-tooltip-bg: rgba(255, 255, 255, 0.96);
+  --chart-tooltip-bg: #fff;
   --chart-tooltip-border: rgba(15, 23, 42, 0.14);
-  --chart-tooltip-text: #0F172A;
-  
+  --chart-tooltip-text: #203b32;
+
   --mesh-1: rgba(124, 58, 237, 0.05);
   --mesh-2: rgba(2, 132, 199, 0.05);
 }
@@ -399,20 +399,8 @@ body {
 
 
 /* FinSight workspace — quiet surfaces, clear hierarchy, one accent. */
-:root {
-  --bg-color: #101c19; --card-bg: #182722; --border-color: #2b3b34;
-  --text-primary: #edf4ef; --text-secondary: #a7b9ae;
-  --primary-color: #288775; --secondary-color: #a6c9b3;
-  --chart-tooltip-bg: #182722; --border-glow: #48765e;
-  --radius-card: 16px; --radius-control: 9px; --radius-button: 9px;
-}
-:root.light-professional {
-  --bg-color: #f6f8f7; --card-bg: #fff; --border-color: #e5ebe7;
-  --text-primary: #203b32; --text-secondary: #74837c;
-  --primary-color: #247a65; --secondary-color: #91b6a4;
-  --accent-glow: #247a6520; --border-glow: #abc7b7;
-  --chart-tooltip-bg: #fff; --chart-tooltip-text: #203b32;
-}
+
+
 body { margin: 0; font-size: 14px; -webkit-font-smoothing: antialiased; }
 button, a, input, select { -webkit-tap-highlight-color: transparent; }
 button { touch-action: manipulation; }
@@ -610,3 +598,8 @@ button { touch-action: manipulation; }
 .report-disclosure > summary { cursor: pointer; font-size: 14px; font-weight: 600; min-height: 28px; }
 .report-disclosure[open] > summary { margin-bottom: 16px; }
 .report-disclosure > div, .report-disclosure > ul { margin-bottom: 12px; }
+.dashboard-main .badge-cyan, .dashboard-main .badge-purple { color: var(--primary-color); background: var(--surface-subtle); border-color: var(--border-color); }
+.panel-heading h2 { font-size: 17px; }
+.metric-top, .metric-card > p, .overview-table th, .overview-table td, .transaction-name strong { font-size: 13px; }
+.transaction-name small, .category-list > div, .chart-legend, .date-pill { font-size: 12px; }
+.dashboard-main .text-xs.uppercase { text-transform: none; letter-spacing: normal; }

@@ -30,7 +30,7 @@ const ConfidenceRing: React.FC<{ score: number; size?: number }> = ({ score, siz
       </svg>
       <div className="absolute flex flex-col items-center justify-center">
         <span className="text-lg font-black text-[var(--text-primary)] leading-none">{score}</span>
-        <span className="text-[7px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Score</span>
+        <span className="text-[7px] text-[var(--text-secondary)] font-bold ">Score</span>
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ const CardTile: React.FC<{
         <div className="flex items-center gap-1.5">
           <span className="text-xs font-bold text-[var(--text-primary)] truncate">{card.bank_name} {card.card_name}</span>
           {rank < 3 && (
-            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full border shrink-0 ${
+            <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full border shrink-0 ${
               rank === 0 ? 'border-emerald-500/30 text-emerald-400' :
               rank === 1 ? 'border-slate-500/30 text-slate-400' :
               'border-orange-600/30 text-orange-500'
@@ -66,14 +66,14 @@ const CardTile: React.FC<{
           )}
         </div>
         <div className="flex items-center gap-3 mt-0.5">
-          <span className="text-[9px] text-[var(--text-secondary)]">Rate: {card.reward_rate}%</span>
+          <span className="text-xs text-[var(--text-secondary)]">Rate: {card.reward_rate}%</span>
           {card.utilization_pct !== undefined && (
-            <span className={`text-[9px] ${card.utilization_pct > 50 ? 'text-red-400' : card.utilization_pct > 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
+            <span className={`text-xs ${card.utilization_pct > 50 ? 'text-red-400' : card.utilization_pct > 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
               Util: {card.utilization_pct.toFixed(0)}%
             </span>
           )}
           {card.monthly_cap_remaining !== null && card.monthly_cap_remaining !== undefined && (
-            <span className="text-[9px] text-violet-400">Cap left: ₹{card.monthly_cap_remaining.toFixed(0)}</span>
+            <span className="text-xs text-violet-400">Cap left: ₹{card.monthly_cap_remaining.toFixed(0)}</span>
           )}
         </div>
       </div>
@@ -82,7 +82,7 @@ const CardTile: React.FC<{
           ₹{card.expected_rewards.toFixed(2)}
         </span>
         {!isWinner && card.additional_savings > 0 && (
-          <span className="text-[8px] text-red-400">-₹{card.additional_savings.toFixed(2)}</span>
+          <span className="text-xs text-red-400">-₹{card.additional_savings.toFixed(2)}</span>
         )}
       </div>
     </div>
@@ -182,33 +182,33 @@ export const BestCardFinder: React.FC = () => {
           <div className="p-1.5 rounded-lg bg-violet-500/10">
             <Zap className="w-4 h-4 text-violet-400" />
           </div>
-          <h3 className="text-sm font-extrabold text-[var(--text-primary)] uppercase tracking-wider">Reward Simulator</h3>
+          <h3 className="text-sm font-extrabold text-[var(--text-primary)] ">Reward Simulator</h3>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Merchant input */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
-              Merchant Name <span className="text-[var(--text-secondary)]/40">(auto-detects category)</span>
+            <label className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
+              Merchant Name <span className="text-[var(--text-secondary)]">(auto-detects category)</span>
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-secondary)]/40" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-secondary)]" />
               <input
                 type="text"
                 placeholder="e.g. DMart, Swiggy, Amazon, IRCTC..."
                 value={merchant}
                 onChange={(e) => handleMerchantChange(e.target.value)}
-                className="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-violet-500/40 transition-colors placeholder:text-[var(--text-secondary)]/50"
+                className="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-violet-500/40 transition-colors placeholder:text-[var(--text-secondary)]"
               />
             </div>
             {isResolvingMerchant && (
-              <span className="text-[9px] text-violet-400/70 flex items-center gap-1">
+              <span className="text-xs text-violet-400/70 flex items-center gap-1">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-violet-400 animate-ping" />
                 AI resolving merchant category...
               </span>
             )}
             {resolvedCategory && !isResolvingMerchant && (
-              <span className="text-[9px] text-emerald-400/80 flex items-center gap-1">
+              <span className="text-xs text-emerald-400/80 flex items-center gap-1">
                 <CheckCircle className="w-2.5 h-2.5" />
                 Resolved: {resolvedCategory}
               </span>
@@ -217,7 +217,7 @@ export const BestCardFinder: React.FC = () => {
 
           {/* Category */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
+            <label className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
               Spend Category <span className="text-red-400">*</span>
             </label>
             <select
@@ -233,7 +233,7 @@ export const BestCardFinder: React.FC = () => {
 
           {/* Amount */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-secondary)]">
+            <label className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
               Purchase Amount (₹) <span className="text-red-400">*</span>
             </label>
             <input
@@ -269,13 +269,13 @@ export const BestCardFinder: React.FC = () => {
 
         {/* Quick picks */}
         <div className="mt-5 pt-4 border-t border-[var(--border-color)]">
-          <p className="text-[9px] uppercase tracking-widest text-[var(--text-secondary)]/50 mb-2">Quick Merchants</p>
+          <p className="text-xs  text-[var(--text-secondary)] mb-2">Quick Merchants</p>
           <div className="flex flex-wrap gap-1.5">
             {['DMart', 'Swiggy', 'Amazon', 'IRCTC', 'Shell', 'Netflix'].map((m) => (
               <button
                 key={m}
                 onClick={() => handleMerchantChange(m)}
-                className="text-[9px] px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)] transition-all cursor-pointer"
+                className="text-xs px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)] transition-all cursor-pointer"
               >
                 {m}
               </button>
@@ -295,7 +295,7 @@ export const BestCardFinder: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Award className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400">
+                      <span className="text-xs uppercase font-bold tracking-widest text-emerald-400">
                         Best Card Recommendation
                       </span>
                     </div>
@@ -303,27 +303,27 @@ export const BestCardFinder: React.FC = () => {
                       {result.best_card.bank_name} {result.best_card.card_name}
                     </h4>
                     {result.best_card.nickname && (
-                      <p className="text-[9px] text-[var(--text-secondary)] font-mono uppercase mt-0.5">{result.best_card.nickname}</p>
+                      <p className="text-xs text-[var(--text-secondary)] font-mono uppercase mt-0.5">{result.best_card.nickname}</p>
                     )}
 
                     {/* Key metrics row */}
                     <div className="flex items-center gap-3 mt-3 flex-wrap">
                       <div className="px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                        <span className="text-[8px] text-[var(--text-secondary)] block uppercase">Cashback</span>
+                        <span className="text-xs text-[var(--text-secondary)] block uppercase">Cashback</span>
                         <span className="text-sm font-black text-emerald-400">₹{result.best_card.expected_rewards.toFixed(2)}</span>
                       </div>
                       <div className="px-2 py-1 rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-color)]">
-                        <span className="text-[8px] text-[var(--text-secondary)] block uppercase">Rate</span>
+                        <span className="text-xs text-[var(--text-secondary)] block uppercase">Rate</span>
                         <span className="text-sm font-black text-[var(--text-primary)]">{result.best_card.reward_rate}%</span>
                       </div>
                       {result.best_card.monthly_cap_remaining !== null && (
                         <div className="px-2 py-1 rounded-lg bg-violet-500/10 border border-violet-500/20">
-                          <span className="text-[8px] text-[var(--text-secondary)] block uppercase">Cap Left</span>
+                          <span className="text-xs text-[var(--text-secondary)] block uppercase">Cap Left</span>
                           <span className="text-sm font-black text-violet-400">₹{result.best_card.monthly_cap_remaining?.toFixed(0)}</span>
                         </div>
                       )}
                       <div className={`px-2 py-1 rounded-lg border ${result.best_card.utilization_pct > 50 ? 'bg-red-500/10 border-red-500/20' : 'bg-[var(--surface-subtle)] border-[var(--border-color)]'}`}>
-                        <span className="text-[8px] text-[var(--text-secondary)] block uppercase">Util</span>
+                        <span className="text-xs text-[var(--text-secondary)] block uppercase">Util</span>
                         <span className={`text-sm font-black ${result.best_card.utilization_pct > 50 ? 'text-red-400' : result.best_card.utilization_pct > 30 ? 'text-yellow-400' : 'text-[var(--text-primary)]'}`}>
                           {result.best_card.utilization_pct.toFixed(0)}%
                         </span>
@@ -334,7 +334,7 @@ export const BestCardFinder: React.FC = () => {
                   {/* Confidence Ring */}
                   <div className="shrink-0 flex flex-col items-center gap-1">
                     <ConfidenceRing score={Math.round(result.best_card.confidence_score)} />
-                    <span className="text-[8px] text-[var(--text-secondary)]/60 uppercase tracking-widest text-center">Confidence</span>
+                    <span className="text-xs text-[var(--text-secondary)]  text-center">Confidence</span>
                   </div>
                 </div>
 
@@ -342,7 +342,7 @@ export const BestCardFinder: React.FC = () => {
                 <div className="mt-4 p-3.5 rounded-xl border border-violet-500/15 bg-violet-500/[0.03]">
                   <div className="flex items-center gap-1.5 mb-2">
                     <Brain className="w-3.5 h-3.5 text-violet-400" />
-                    <span className="text-[9px] uppercase font-bold tracking-wider text-violet-400">AI Advisor Explanation</span>
+                    <span className="text-xs uppercase font-bold tracking-wider text-violet-400">AI Advisor Explanation</span>
                   </div>
                   <p className="text-xs text-[var(--text-secondary)] leading-relaxed italic">
                     "{result.explanation}"
@@ -353,7 +353,7 @@ export const BestCardFinder: React.FC = () => {
               {/* ── Alternative + Fallback cards ── */}
               {(result.alternative_card || result.fallback_card) && (
                 <GlassCard className="p-4">
-                  <h4 className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/60 mb-3 flex items-center gap-1.5">
+                  <h4 className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] mb-3 flex items-center gap-1.5">
                     <BarChart2 className="w-3 h-3" />
                     Alternatives
                   </h4>
@@ -371,7 +371,7 @@ export const BestCardFinder: React.FC = () => {
               {/* ── Full Rankings ── */}
               {result.rankings.length > 1 && (
                 <GlassCard className="p-4">
-                  <h4 className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/60 mb-3 flex items-center gap-1.5">
+                  <h4 className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] mb-3 flex items-center gap-1.5">
                     <Star className="w-3 h-3" />
                     All Cards Ranked by Score
                   </h4>
@@ -404,11 +404,11 @@ export const BestCardFinder: React.FC = () => {
             </div>
             <div>
               <h4 className="text-[var(--text-primary)] font-bold text-sm mb-1">Reward Optimizer Ready</h4>
-              <p className="text-xs text-[var(--text-secondary)]/60 leading-relaxed max-w-xs">
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-xs">
                 Enter a merchant or category and transaction amount to find your highest-reward card with AI-powered confidence scoring.
               </p>
             </div>
-            <div className="flex flex-col items-start gap-1.5 text-[9px] text-[var(--text-secondary)]/50">
+            <div className="flex flex-col items-start gap-1.5 text-xs text-[var(--text-secondary)]">
               <div className="flex items-center gap-1.5"><CircleDot className="w-3 h-3 text-emerald-400/50" /> Normalized reward calculator with monthly cap tracking</div>
               <div className="flex items-center gap-1.5"><CircleDot className="w-3 h-3 text-violet-400/50" /> 5-factor confidence scoring (reward + cap + util + due + fee)</div>
               <div className="flex items-center gap-1.5"><CircleDot className="w-3 h-3 text-yellow-400/50" /> AI merchant classification via Groq LLM</div>

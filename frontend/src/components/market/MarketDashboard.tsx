@@ -186,13 +186,13 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
             <div className="lg:col-span-1 space-y-6">
               <GlassCard className="hover:border-[var(--primary-color)]/20 transition-all duration-300">
                 <div className="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-2">
-                  <h4 className="text-xs font-extrabold uppercase tracking-widest text-[var(--text-primary)] flex items-center gap-1.5">
+                  <h4 className="text-xs font-extrabold  text-[var(--text-primary)] flex items-center gap-1.5">
                     <Bookmark className="w-4 h-4 text-[var(--primary-color)]" /> Your Watchlist
                   </h4>
                   {watchlist.length > 0 && (
                     <GlassButton
                       variant="outline"
-                      className="py-1 px-2.5 text-[8px] tracking-wide font-black"
+                      className="py-1 px-2.5 text-xs tracking-wide font-black"
                       onClick={handleAnalyzeAll}
                       disabled={isAnalyzingAll}
                     >
@@ -212,13 +212,13 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                 </div>
 
                 {isWatchlistLoading ? (
-                  <div className="py-8 text-center text-xs text-[var(--text-secondary)]/40 animate-pulse">
+                  <div className="py-8 text-center text-xs text-[var(--text-secondary)] animate-pulse">
                     Loading watchlist...
                   </div>
                 ) : watchlist.length === 0 ? (
-                  <div className="py-8 text-center text-xs text-[var(--text-secondary)]/50">
+                  <div className="py-8 text-center text-xs text-[var(--text-secondary)]">
                     No tracked shares in watchlist. 
-                    <p className="text-[10px] text-[var(--text-secondary)]/40 mt-1">
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">
                       Search and track shares to display them here.
                     </p>
                   </div>
@@ -240,14 +240,14 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                           <div className="text-xs font-black text-[var(--text-primary)] hover:text-[var(--primary-color)] transition-colors">
                             {item.symbol}
                           </div>
-                          <div className="text-[9px] text-[var(--text-secondary)]/50 truncate">
+                          <div className="text-xs text-[var(--text-secondary)] truncate">
                             {item.company_name}
                           </div>
                         </button>
 
                         <GlassButton
                           variant={activeAnalysisSymbol === item.symbol ? 'primary' : 'outline'}
-                          className="py-1 px-2 text-[9px] font-bold"
+                          className="py-1 px-2 text-xs font-bold"
                           onClick={() => setActiveAnalysisSymbol(item.symbol)}
                         >
                           <span>AI Report</span>
@@ -262,13 +262,13 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
               {rankings.length > 0 && (
                 <GlassCard className="border-purple-500/25">
                   <div className="flex justify-between items-center mb-3 border-b border-[var(--border-color)] pb-2">
-                    <h5 className="text-[10px] uppercase font-extrabold tracking-widest text-purple-400 flex items-center gap-1">
+                    <h5 className="text-xs uppercase font-extrabold tracking-widest text-purple-400 flex items-center gap-1">
                       <Sparkles className="w-3.5 h-3.5" /> AI Rankings
                     </h5>
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
-                      className="bg-black/40 text-[9px] font-bold border border-[var(--border-color)] rounded px-1.5 py-0.5 text-[var(--text-primary)] focus:outline-none"
+                      className="bg-black/40 text-xs font-bold border border-[var(--border-color)] rounded px-1.5 py-0.5 text-[var(--text-primary)] focus:outline-none"
                     >
                       <option value="strength">Score</option>
                       <option value="confidence">Evidence confidence</option>
@@ -283,7 +283,7 @@ export const MarketDashboard: React.FC<MarketDashboardProps> = ({ onBack }) => {
                         onClick={() => setActiveAnalysisSymbol(r.symbol)}
                         className="w-full text-left flex items-center justify-between p-2 rounded-lg bg-[var(--surface-muted)] hover:bg-[var(--surface-subtle)] border border-transparent hover:border-[var(--border-color)] transition-all duration-150"
                       >
-                        <span className="font-bold text-[var(--text-secondary)]/70 w-5">
+                        <span className="font-bold text-[var(--text-secondary)] w-5">
                           {idx + 1}.
                         </span>
                         <span className="font-black text-[var(--text-primary)] flex-1">

@@ -40,7 +40,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
       whileHover={{ scale: props.disabled || isLoading ? 1 : 1.01 }}
       whileTap={{ scale: props.disabled || isLoading ? 1 : 0.98 }}
       className={cn(
-        "relative overflow-hidden font-medium min-h-[var(--button-height)] py-2.5 px-6 rounded-[var(--radius-button)] flex items-center justify-center transition-all duration-300 gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-color)]",
+        "relative overflow-hidden font-medium text-sm min-h-[var(--button-height)] py-2.5 px-6 rounded-[var(--radius-button)] flex items-center justify-center transition-all duration-300 gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-color)]",
         fullWidth && "w-full",
         
         variant === 'primary' && "bg-[var(--primary-color)] text-white shadow-sm focus:ring-[var(--primary-color)]",

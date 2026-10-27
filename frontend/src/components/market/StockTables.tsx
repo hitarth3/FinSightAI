@@ -63,7 +63,7 @@ export const StockTables: React.FC<StockTablesProps> = ({
             <div className="text-xs font-black text-[var(--text-primary)] group-hover:text-[var(--primary-color)] transition-colors">
               {stock.symbol}
             </div>
-            <div className="text-[10px] text-[var(--text-secondary)]/60 truncate">
+            <div className="text-xs text-[var(--text-secondary)] truncate">
               {stock.companyName}
             </div>
           </div>
@@ -74,11 +74,11 @@ export const StockTables: React.FC<StockTablesProps> = ({
             ₹{stock.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </div>
           {type === 'active' ? (
-            <div className="text-[9px] font-semibold text-[var(--text-secondary)]/70">
+            <div className="text-xs font-semibold text-[var(--text-secondary)]">
               Vol: {(stock.volume / 100000).toFixed(1)}L
             </div>
           ) : (
-            <div className={`text-[10px] font-bold flex items-center justify-end gap-0.5 ${isUp ? 'text-success' : 'text-error'}`}>
+            <div className={`text-xs font-bold flex items-center justify-end gap-0.5 ${isUp ? 'text-success' : 'text-error'}`}>
               {isUp ? '+' : ''}{stock.changePercent.toFixed(2)}%
             </div>
           )}
@@ -92,7 +92,7 @@ export const StockTables: React.FC<StockTablesProps> = ({
       {/* Top Gainers */}
       <GlassCard className="flex flex-col justify-between hover:border-success/20 transition-all duration-300">
         <div>
-          <h4 className="text-xs font-extrabold uppercase tracking-widest text-success mb-4 flex items-center gap-2">
+          <h4 className="text-xs font-extrabold  text-success mb-4 flex items-center gap-2">
             <TrendingUp className="w-4.5 h-4.5" /> Top Gainers
           </h4>
           <div className="space-y-1">
@@ -104,7 +104,7 @@ export const StockTables: React.FC<StockTablesProps> = ({
       {/* Top Losers */}
       <GlassCard className="flex flex-col justify-between hover:border-error/20 transition-all duration-300">
         <div>
-          <h4 className="text-xs font-extrabold uppercase tracking-widest text-error mb-4 flex items-center gap-2">
+          <h4 className="text-xs font-extrabold  text-error mb-4 flex items-center gap-2">
             <TrendingDown className="w-4.5 h-4.5" /> Top Losers
           </h4>
           <div className="space-y-1">
@@ -116,7 +116,7 @@ export const StockTables: React.FC<StockTablesProps> = ({
       {/* Most Active */}
       <GlassCard className="flex flex-col justify-between hover:border-cyan-500/20 transition-all duration-300">
         <div>
-          <h4 className="text-xs font-extrabold uppercase tracking-widest text-cyan-400 mb-4 flex items-center gap-2">
+          <h4 className="text-xs font-extrabold  text-cyan-400 mb-4 flex items-center gap-2">
             <Activity className="w-4.5 h-4.5" /> Most Active
           </h4>
           <div className="space-y-1">

@@ -15,13 +15,13 @@ const MetricCell: React.FC<{
 }> = ({ label, value, icon: Icon, color = 'text-[var(--primary-color)]', sub, highlight }) => (
   <GlassCard className={`p-4 flex flex-col gap-2 ${highlight ? 'border-emerald-500/20 bg-emerald-500/[0.02]' : ''}`}>
     <div className="flex items-center justify-between">
-      <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/60">{label}</span>
+      <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">{label}</span>
       <div className={`p-1.5 rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-color)] ${color}`}>
         <Icon className="w-3.5 h-3.5" />
       </div>
     </div>
     <h4 className={`text-xl font-black text-[var(--text-primary)] ${highlight ? 'text-emerald-400' : ''}`}>{value}</h4>
-    {sub && <p className="text-[9px] text-[var(--text-secondary)]/60 truncate">{sub}</p>}
+    {sub && <p className="text-xs text-[var(--text-secondary)] truncate">{sub}</p>}
   </GlassCard>
 );
 
@@ -142,7 +142,7 @@ export const RewardsAnalytics: React.FC = () => {
       {/* ── Monthly Cap Usage Bars ── */}
       {analytics?.cap_usage_summary && analytics.cap_usage_summary.length > 0 && (
         <GlassCard className="p-5">
-          <h4 className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/60 mb-4 flex items-center gap-1.5">
+          <h4 className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] mb-4 flex items-center gap-1.5">
             <Zap className="w-3 h-3 text-violet-400" /> Monthly Reward Cap Usage
           </h4>
           <div className="space-y-3">
@@ -155,20 +155,20 @@ export const RewardsAnalytics: React.FC = () => {
               />
             ))}
           </div>
-          <p className="text-[8px] text-[var(--text-secondary)]/40 mt-3">Cap data reflects advisor-tracked recommendation sessions this month.</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-3">Cap data reflects advisor-tracked recommendation sessions this month.</p>
         </GlassCard>
       )}
 
       {/* ── Monthly Reward Ledger ── */}
       {summaries && summaries.length > 0 && (
         <GlassCard className="p-5">
-          <h4 className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/60 mb-4 flex items-center gap-2">
+          <h4 className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)] mb-4 flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5" /> Monthly Reward Ledger
           </h4>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-[8.5px] uppercase tracking-widest text-[var(--text-secondary)]/50 border-b border-[var(--border-color)]">
+                <tr className="text-[8.5px]  text-[var(--text-secondary)] border-b border-[var(--border-color)]">
                   <th className="text-left pb-2.5 font-bold">Month</th>
                   <th className="text-left pb-2.5 font-bold">Cards Used</th>
                   <th className="text-right pb-2.5 font-bold text-emerald-400">Earned</th>
@@ -185,7 +185,7 @@ export const RewardsAnalytics: React.FC = () => {
                   return (
                     <tr key={i} className="hover:bg-[var(--surface-muted)] transition-colors duration-150">
                       <td className="py-2.5 font-semibold text-[var(--text-primary)]">{row.month}</td>
-                      <td className="py-2.5 text-[var(--text-secondary)]/60 max-w-[100px] truncate">{row.cards_used || '—'}</td>
+                      <td className="py-2.5 text-[var(--text-secondary)] max-w-[100px] truncate">{row.cards_used || '—'}</td>
                       <td className="py-2.5 text-right font-bold text-emerald-400">
                         ₹{row.rewards_earned.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                       </td>
@@ -197,7 +197,7 @@ export const RewardsAnalytics: React.FC = () => {
                       <td className="py-2.5 text-right font-semibold text-violet-400 hidden md:table-cell">
                         ₹{(row.annual_forecast || row.rewards_earned * 12).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                       </td>
-                      <td className="py-2.5 text-[var(--text-secondary)]/60 hidden lg:table-cell truncate max-w-[100px]">
+                      <td className="py-2.5 text-[var(--text-secondary)] hidden lg:table-cell truncate max-w-[100px]">
                         {row.top_categories || '—'}
                       </td>
                     </tr>
@@ -211,9 +211,9 @@ export const RewardsAnalytics: React.FC = () => {
 
       {!analytics && !analyticsLoading && (
         <GlassCard className="p-10 text-center">
-          <BarChart3 className="w-8 h-8 mx-auto mb-3 text-[var(--text-secondary)]/40" />
+          <BarChart3 className="w-8 h-8 mx-auto mb-3 text-[var(--text-secondary)]" />
           <p className="font-bold text-[var(--text-primary)] mb-1">No Analytics Yet</p>
-          <p className="text-xs text-[var(--text-secondary)]/60">Add credit cards and record transactions to unlock reward intelligence.</p>
+          <p className="text-xs text-[var(--text-secondary)]">Add credit cards and record transactions to unlock reward intelligence.</p>
         </GlassCard>
       )}
     </div>

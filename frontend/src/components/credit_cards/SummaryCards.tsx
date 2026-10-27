@@ -53,49 +53,49 @@ export const SummaryCards: React.FC = () => {
       {/* 1. Total Limit */}
       <GlassCard className="flex flex-col justify-between h-full hover:border-blue-500/20 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">Total Limit</span>
+          <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">Total Limit</span>
           <div className="p-1.5 rounded bg-[var(--surface-subtle)] text-blue-400">
             <Landmark className="w-3.5 h-3.5" />
           </div>
         </div>
         <div>
           <h4 className="text-xl font-black text-[var(--text-primary)]">₹{total_limit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</h4>
-          <span className="text-[10px] text-[var(--text-secondary)]/40 block mt-1">Aggregated across all cards</span>
+          <span className="text-xs text-[var(--text-secondary)] block mt-1">Aggregated across all cards</span>
         </div>
       </GlassCard>
 
       {/* 2. Outstanding Balance */}
       <GlassCard className="flex flex-col justify-between h-full hover:border-red-500/20 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">Outstanding</span>
+          <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">Outstanding</span>
           <div className="p-1.5 rounded bg-[var(--surface-subtle)] text-red-400">
             <Wallet className="w-3.5 h-3.5" />
           </div>
         </div>
         <div>
           <h4 className="text-xl font-black text-red-400">₹{total_outstanding.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</h4>
-          <span className="text-[10px] text-[var(--text-secondary)]/40 block mt-1">Total unpaid liabilities</span>
+          <span className="text-xs text-[var(--text-secondary)] block mt-1">Total unpaid liabilities</span>
         </div>
       </GlassCard>
 
       {/* 3. Available Credit */}
       <GlassCard className="flex flex-col justify-between h-full hover:border-green-500/20 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">Available Credit</span>
+          <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">Available Credit</span>
           <div className="p-1.5 rounded bg-[var(--surface-subtle)] text-emerald-400">
             <Compass className="w-3.5 h-3.5" />
           </div>
         </div>
         <div>
           <h4 className="text-xl font-black text-emerald-400">₹{available_credit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</h4>
-          <span className="text-[10px] text-[var(--text-secondary)]/40 block mt-1">Safe-to-spend limit remaining</span>
+          <span className="text-xs text-[var(--text-secondary)] block mt-1">Safe-to-spend limit remaining</span>
         </div>
       </GlassCard>
 
       {/* 4. Overall Utilization */}
       <GlassCard className={`flex flex-col justify-between h-full transition-all duration-300 border hover:border-opacity-50`}>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">Overall Utilization</span>
+          <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">Overall Utilization</span>
           <div className={`p-1.5 rounded bg-[var(--surface-subtle)] ${getUtilColor(overall_utilization).split(' ')[0]}`}>
             <ShieldAlert className="w-3.5 h-3.5" />
           </div>
@@ -110,7 +110,7 @@ export const SummaryCards: React.FC = () => {
               style={{ width: `${Math.min(overall_utilization, 100)}%` }} 
             />
           </div>
-          <span className="text-[10px] text-[var(--text-secondary)]/45 block mt-1.5">
+          <span className="text-xs text-[var(--text-secondary)]/45 block mt-1.5">
             {overall_utilization > 30 ? 'Exceeds recommended 30%' : 'Healthy utilization range'}
           </span>
         </div>
@@ -119,14 +119,14 @@ export const SummaryCards: React.FC = () => {
       {/* 5. Expected Rewards */}
       <GlassCard className="flex flex-col justify-between h-full hover:border-yellow-500/20 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--text-secondary)]/50">Expected Rewards</span>
+          <span className="text-xs uppercase font-bold tracking-widest text-[var(--text-secondary)]">Expected Rewards</span>
           <div className="p-1.5 rounded bg-[var(--surface-subtle)] text-yellow-400">
             <Award className="w-3.5 h-3.5" />
           </div>
         </div>
         <div>
           <h4 className="text-xl font-black text-yellow-400">₹{expected_rewards.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</h4>
-          <span className="text-[10px] text-[var(--text-secondary)]/40 block mt-1">Forecasted cashback & values</span>
+          <span className="text-xs text-[var(--text-secondary)] block mt-1">Forecasted cashback & values</span>
         </div>
       </GlassCard>
     </div>
