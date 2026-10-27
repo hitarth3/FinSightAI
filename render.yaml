@@ -41,7 +41,7 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      - key: N8N_ANALYTIC_WEBHOOK_URL
-        sync: false
+      - key: STOCK_REPORT_MODEL
+        value: llama-3.3-70b-versatile
       - key: CORS_ALLOWED_ORIGINS
         sync: false

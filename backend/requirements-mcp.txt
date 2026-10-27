@@ -1,0 +1,3 @@
+-r requirements.txt
+# Optional local MCP interface; dashboard does not need this process.
+mcp==1.30.0

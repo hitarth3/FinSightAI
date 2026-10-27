@@ -74,3 +74,56 @@ CI also installs the constrained backend dependencies, runs `pip check`, applies
 The root `compose.yaml` runs PostgreSQL 16 and the FastAPI API. Production startup requires `DEBUG=False`, an original 32-character-or-longer signing key, and an explicit list of CORS origins. The production API omits interactive OpenAPI documentation. The backend image runs as a non-root user and persists uploaded files to a volume. `render.yaml` is an alternative backend blueprint; set database, API integrations, and your exact frontend URL in CORS. Set `VITE_API_URL` to the HTTPS API origin in Vercel.
 
 Read [DEPLOYMENT.md](DEPLOYMENT.md) for launch steps and the current feature limits. This app has not had a production security review.
+
+## Stock reports and MCP
+
+Stock reports now run in FastAPI without n8n. An authenticated
+`POST /api/stocks/analysis/trigger/{symbol}` fetches six months of adjusted daily
+Yahoo Finance history, computes trend/range metrics, and saves the report in the
+existing database transaction. Symbols without a suffix use NSE; `.BO` uses BSE.
+At least 50 observations are required. Provider failures return 503; the UI can
+show a clearly marked older saved report. No database migration is required.
+
+Set `GROQ_API_KEY` in `backend/.env` to add an AI-written summary. Optionally set
+`STOCK_REPORT_MODEL` (default `llama-3.3-70b-versatile`). Without a key, or if Groq
+fails, the report contains a labeled rules-based summary of the same metrics.
+The score is a trend heuristic; HOLD is a neutral research placeholder, not a
+personalized recommendation. Confidence is not estimated. No news or fundamental
+analysis is claimed. The report includes its market-data date and source.
+Historical range extrema are not forecasts. Old n8n environment variables are no
+longer used; remove them from local/deployment configuration when convenient.
+
+MCP is an additional interface for compatible AI clients, not a replacement for
+market data or an LLM. Its two tools use the exact same engine as the dashboard:
+`get_market_snapshot` and `generate_stock_report`. They expose public market data
+only, do not save reports, and cannot access accounts or place trades.
+
+Install and launch the optional local stdio server:
+
+```sh
+cd backend
+.venv/bin/python -m pip install -r requirements-mcp.txt
+.venv/bin/python market_mcp.py
+```
+
+The process waits for an MCP client on stdin. Configure your MCP client's server
+entry using absolute paths (replace `/absolute/path/FinSightAI-main`):
+
+```json
+{
+  "mcpServers": {
+    "finsight-market": {
+      "command": "/absolute/path/FinSightAI-main/backend/.venv/bin/python",
+      "args": ["/absolute/path/FinSightAI-main/backend/market_mcp.py"],
+      "cwd": "/absolute/path/FinSightAI-main/backend"
+    }
+  }
+}
+```
+
+Launch from the backend directory so the existing `.env` is loaded; clients that
+do not support `cwd` should supply the backend environment explicitly. Keep keys
+out of committed client configuration. This is a local stdio server, not a public
+HTTP MCP endpoint. The existing application settings validation still applies.
+Implementation references: [official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+and [Groq JSON output](https://console.groq.com/docs/structured-outputs).
