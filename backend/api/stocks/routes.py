@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.session import get_db
 from schemas.base import StandardResponse
 from schemas.stock import StockCreate, StockResponse
-from schemas.stock_analysis import StockAnalysisCreate, StockAnalysisResponse
+from schemas.stock_analysis import StockAnalysisResponse
 from services.stock import StockService
 from core.dependencies import get_current_user
 from models.user import User

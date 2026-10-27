@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { stockAnalysisService, StockAnalysis } from '../../services/stockAnalysisService';
 import { GlassCard } from '../ui/GlassCard';
 import { GlassButton } from '../ui/GlassButton';
@@ -24,19 +24,22 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const requestVersion = useRef(0);
+
   const fetchAnalysis = async (forceRefresh = false) => {
     if (!symbol) return;
+    const version = ++requestVersion.current;
     setIsLoading(true);
     setError(null);
     try {
       const result = await stockAnalysisService.getAnalysis(symbol, forceRefresh);
-      setAnalysis(result);
+      if (version === requestVersion.current) setAnalysis(result);
     } catch (err: any) {
-      if (err.name !== 'AbortError') {
+      if (version === requestVersion.current && err.name !== 'AbortError') {
         setError(err.message || 'API timed out connecting to the intelligence service.');
       }
     } finally {
-      setIsLoading(false);
+      if (version === requestVersion.current) setIsLoading(false);
     }
   };
 
@@ -46,6 +49,7 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
     } else {
       setAnalysis(null);
     }
+    return () => { requestVersion.current += 1; };
   }, [symbol]);
 
   // Empty State

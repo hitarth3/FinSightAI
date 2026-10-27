@@ -64,3 +64,46 @@ async def test_ai_failure_falls_back(prices, monkeypatch):
 async def test_generation_requires_login(client):
     response = await client.post('/api/stocks/analysis/trigger/TCS')
     assert response.status_code in (401, 403)
+
+
+@pytest.mark.asyncio
+async def test_authenticated_report_endpoint(prices, client):
+    from main import app
+    from core.dependencies import get_current_user
+    app.dependency_overrides[get_current_user] = lambda: object()
+    response = await client.post('/api/stocks/analysis/trigger/TCS')
+    assert response.status_code == 200
+    data = response.json()['data']
+    assert data['symbol'] == 'TCS'
+    assert data['strength_score'] == 90
+    saved = await client.get('/api/stocks/analysis/TCS')
+    assert saved.json()['data']['summary'] == data['summary']
+    invalid = await client.post('/api/stocks/analysis/trigger/AAPL.US')
+    assert invalid.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_provider_failure_endpoint(client, monkeypatch):
+    from main import app
+    from core.dependencies import get_current_user
+    app.dependency_overrides[get_current_user] = lambda: object()
+    monkeypatch.setattr(stock_report, '_history', lambda symbol: pd.DataFrame())
+    response = await client.post('/api/stocks/analysis/trigger/TCS')
+    assert response.status_code == 503
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('content, expected', [
+    ('{"summary":"The supplied price averages indicate a positive historical trend."}', 'AI-assisted technical report'),
+    ('{"summary":42}', 'AI summary unavailable'),
+    ('not json', 'AI summary unavailable'),
+])
+async def test_ai_response_validation(prices, monkeypatch, content, expected):
+    monkeypatch.setattr(settings, 'GROQ_API_KEY', 'test-only')
+    response = stock_report.httpx.Response(200, request=stock_report.httpx.Request('POST', 'https://example.test'),
+        json={'choices': [{'message': {'content': content}}]})
+    monkeypatch.setattr(stock_report.httpx.AsyncClient, 'post', AsyncMock(return_value=response))
+    report = await stock_report.generate_report('TCS')
+    assert expected in report.summary
+    assert report.strength_score == 90
+    assert report.sentiment == 'Not evaluated'
