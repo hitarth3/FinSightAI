@@ -49,7 +49,7 @@ export function FinanceAssistantCockpit({ workspace, setWorkspace }: {
     setBusy(true); setError(null);
     try {
       const response = await apiFetch(`${API_BASE}/api/advisor/${activeScope === 'cards' ? 'chat' : 'finance-chat'}`, {
-        method: 'POST', signal: abort.signal,
+        method: 'POST', signal: abort.signal, timeoutMs: 60_000,
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('finsight_access_token') || ''}` },
         body: JSON.stringify({ message: question.trim(), history: history.slice(-4).map(item => ({ ...item, content: item.content.slice(0, 8000) })), ...(activeScope === 'finance' ? { is_analyze: false } : {}) }),
       });

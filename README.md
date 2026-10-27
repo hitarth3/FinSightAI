@@ -157,3 +157,34 @@ Check `http://127.0.0.1:8000/api/health/ready` if login cannot connect. A stoppe
 backend is different from an incorrect password; restarting only the frontend
 will not restore authentication. After intentionally stopping the servers, start
 both again with `bash run.sh` before trying to sign in.
+
+## AI integration and reliability
+
+The finance assistant and card advisor use a shared LangChain `ChatGroq` client
+(`backend/services/ai_client.py`). Expense classification also uses this client
+configuration. Set `GROQ_MODEL` for these features (default
+`openai/gpt-oss-120b`); `GROQ_FALLBACK_MODEL` controls the receipt parser's fallback
+(default `openai/gpt-oss-20b`). Stock research retains its independently configurable
+`STOCK_REPORT_MODEL`. API keys belong only in the backend environment.
+
+The shared assistant chain uses asynchronous calls, a request deadline, no hidden
+provider retries, output validation and explicit fallbacks. Chat history accepts
+only user/assistant messages and has size limits. Card knowledge retrieval uses
+local deterministic keyword vectors; older documents are recomputed in the same
+space, avoiding mixed-provider vector failures. This is keyword retrieval, not a
+semantic embedding service. Market indices with unavailable quotes are omitted
+and visibly marked unavailable rather than filled with synthetic values.
+
+LangGraph is not required for the current bounded request/response workflows.
+Consider it when adding resumable multi-step research, checkpoints or approval
+steps. MCP remains the optional interface for external AI clients to call market
+research tools; LangChain handles model calls inside the application.
+References: [LangChain/Groq](https://reference.langchain.com/python/langchain-groq/chat_models/ChatGroq/with_structured_output)
+and [LangChain versus LangGraph](https://langchain-ai.github.io/langgraph/reference/).
+
+Verification includes isolated authenticated workspace-route smoke tests, model
+output/timeout tests, stock data availability checks and frontend timeout tests.
+The normal frontend timeout remains 30 seconds; assistant calls allow 60 seconds
+and stock report generation 90 seconds. These limits do not guarantee upstream
+provider availability. A successful build/test suite is not a production security
+review or an exhaustive browser test of every populated account and upload type.

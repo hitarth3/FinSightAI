@@ -15,14 +15,19 @@ export function clearSession() {
   }
 }
 
-export async function publicFetch(url: string, options: RequestInit = {}): Promise<Response> {
+export type ApiRequestOptions = RequestInit & { timeoutMs?: number };
+
+export async function publicFetch(url: string, options: ApiRequestOptions = {}): Promise<Response> {
+  const { timeoutMs, ...fetchOptions } = options;
   const controller = new AbortController();
   const abort = () => controller.abort();
   if (options.signal?.aborted) controller.abort();
   options.signal?.addEventListener('abort', abort, { once: true });
-  const timer = setTimeout(abort, options.body instanceof FormData ? 90_000 : 30_000);
+  const defaultTimeout = options.body instanceof FormData ? 90_000 : 30_000;
+  const duration = timeoutMs !== undefined && Number.isFinite(timeoutMs) ? Math.max(1, Math.min(timeoutMs, 120_000)) : defaultTimeout;
+  const timer = setTimeout(abort, duration);
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetch(url, { ...fetchOptions, signal: controller.signal });
   } catch {
     if (controller.signal.aborted) throw new ApiError('The request timed out or was cancelled. Please try again.', 0);
     throw new ApiError('Unable to reach the server. Check your connection and try again.', 0);
@@ -50,7 +55,7 @@ async function rotateSession(): Promise<boolean> {
   return true;
 }
 
-export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
+export async function apiFetch(url: string, options: ApiRequestOptions = {}): Promise<Response> {
   // Never attach credentials to arbitrary external URLs.
   const target = new URL(url, API_BASE);
   if (target.origin !== new URL(API_BASE).origin || !target.pathname.startsWith('/api/')) {

@@ -92,3 +92,13 @@ test('aborted requests settle with an actionable error', async () => {
   const controller = new AbortController(); controller.abort();
   await assert.rejects(publicFetch(`${API_BASE}/api/health/live`, { signal: controller.signal }), /cancelled/);
 });
+
+test('custom request timeouts abort work without leaking transport options into fetch', async () => {
+  globalThis.fetch = async (_url, options) => {
+    assert.equal('timeoutMs' in (options || {}), false);
+    return new Promise((_resolve, reject) => {
+      options?.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')), { once: true });
+    });
+  };
+  await assert.rejects(publicFetch(`${API_BASE}/api/stocks/analysis/trigger/TCS`, { timeoutMs: 5 }), /timed out/);
+});

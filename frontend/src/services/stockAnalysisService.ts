@@ -82,6 +82,7 @@ class StockAnalysisService {
       console.log(`[Analysis API] Requesting backend trigger for ${cleanSymbol}...`);
       const response = await apiFetch(`${API_BASE}/api/stocks/analysis/trigger/${encodeURIComponent(cleanSymbol)}`, {
         method: 'POST',
+        timeoutMs: 90_000,
         headers: getHeaders(),
       });
 
