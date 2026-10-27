@@ -306,14 +306,53 @@ export const StockAnalysisPanel: React.FC<StockAnalysisPanelProps> = ({ symbol }
         </div>
 
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
-          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">Confidence</span>
-          <span className="font-bold text-[var(--text-primary)]">{analysis.confidence === 0 ? 'Not estimated' : `${analysis.confidence}%`}</span>
+          <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">Evidence Confidence</span>
+          <span className="font-bold text-[var(--text-primary)]">{analysis.evidence?.version === 2 ? `${analysis.confidence}/100` : 'Refresh report'}</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] text-xs">
           <span className="text-[8px] uppercase tracking-widest text-[var(--text-secondary)]/50 block mb-0.5">Risk Level</span>
           <span className="font-bold text-[var(--text-primary)] capitalize">{analysis.riskLevel}</span>
         </div>
+      </div>
+
+      <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-3">
+        <div>
+          <h5 className="text-xs font-bold text-[var(--text-primary)]">Confidence breakdown</h5>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
+            Measures evidence coverage and freshness, not the probability of profit or prediction accuracy.
+          </p>
+        </div>
+        {analysis.evidence?.confidence_components && <div className="flex flex-wrap gap-2">
+          {Object.entries(analysis.evidence.confidence_components).map(([name, value]) => (
+            <span key={name} className="text-xs px-2 py-1 rounded bg-[var(--surface-raised)] text-[var(--text-primary)]">
+              {name.replaceAll('_', ' ')}: {value}
+            </span>
+          ))}
+        </div>}
+        <p className="text-xs text-[var(--text-secondary)]">{analysis.evidence?.recommendation_method}</p>
+      </div>
+
+      <div className="p-4 rounded-xl bg-[var(--surface-muted)] border border-[var(--border-color)] space-y-3">
+        <div>
+          <h5 className="text-xs font-bold text-[var(--text-primary)]">News behind the sentiment</h5>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
+            {analysis.evidence?.news_method || 'Refresh this report to load news evidence'} · Headlines from the last 14 days
+          </p>
+        </div>
+        {analysis.evidence?.news?.length ? (
+          <ul className="space-y-3">
+            {analysis.evidence.news.map((article, index) => (
+              <li key={`${article.url}-${index}`} className="text-xs space-y-1">
+                <a href={article.url.startsWith('https://') ? article.url : undefined} target="_blank" rel="noopener noreferrer"
+                  className="text-[var(--primary-color)] hover:underline">{article.title}</a>
+                <p className="text-[var(--text-secondary)]">
+                  {article.source} · {new Date(article.published_at).toLocaleDateString('en-IN')} · {article.sentiment}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="text-xs text-[var(--text-secondary)]">No recent verified headlines available. Refresh to retry.</p>}
       </div>
 
       {/* Summary */}

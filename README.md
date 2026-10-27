@@ -82,16 +82,33 @@ Stock reports now run in FastAPI without n8n. An authenticated
 Yahoo Finance history, computes trend/range metrics, and saves the report in the
 existing database transaction. Symbols without a suffix use NSE; `.BO` uses BSE.
 At least 50 observations are required. Provider failures return 503; the UI can
-show a clearly marked older saved report. No database migration is required.
+show a clearly marked older saved report. Run `cd backend && .venv/bin/alembic upgrade head`
+to add the report evidence column before restarting the API.
 
 Set `GROQ_API_KEY` in `backend/.env` to add an AI-written summary. Optionally set
-`STOCK_REPORT_MODEL` (default `llama-3.3-70b-versatile`). Without a key, or if Groq
+`STOCK_REPORT_MODEL` (default `openai/gpt-oss-120b`). Without a key, or if Groq
 fails, the report contains a labeled rules-based summary of the same metrics.
-The score is a trend heuristic; HOLD is a neutral research placeholder, not a
-personalized recommendation. Confidence is not estimated. No news or fundamental
-analysis is claimed. The report includes its market-data date and source.
-Historical range extrema are not forecasts. Old n8n environment variables are no
-longer used; remove them from local/deployment configuration when convenient.
+The trend score uses price versus 20/50-session averages and 20-session return.
+Recent company headlines come from Google News RSS, with ticker-associated Yahoo
+news as fallback. Headlines older than 14 days, future-dated entries, duplicate
+titles and invalid links are excluded. Groq classifies each supplied headline;
+validated article IDs prevent invented sources. When AI is unavailable, a labeled
+keyword method scores headline tone. No news produces `Unavailable`, never a
+fabricated neutral reading. Full article text and fundamentals are not analyzed.
+
+The panel displays the dated source links, per-headline labels and confidence
+components. **Evidence confidence is a quality heuristic, not prediction accuracy
+or probability of profit.** History coverage contributes up to 30 points, price
+recency 25, news count 15, source diversity 15, and sentiment method 10 (3 for
+keyword fallback). Scores are capped at 45 when price data is over seven days old.
+A trend score ≥70 gives BUY and ≤30 gives SELL only when confidence is ≥60 and
+news is neither opposing nor mixed; otherwise the signal is HOLD. These are
+technical screening signals, not personalized advice. Historical range extrema
+are not price targets. Evidence is saved with each report and is available through
+MCP too. Refresh legacy reports to populate the new fields.
+
+Old n8n environment variables are no longer used; remove them from local or
+deployment configuration when convenient.
 
 MCP is an additional interface for compatible AI clients, not a replacement for
 market data or an LLM. Its two tools use the exact same engine as the dashboard:

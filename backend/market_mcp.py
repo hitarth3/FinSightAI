@@ -14,7 +14,7 @@ async def get_market_snapshot(symbol: str) -> dict:
 
 @mcp.tool()
 async def generate_stock_report(symbol: str) -> dict:
-    """Generate price-based research with optional Groq narrative; does not save or trade."""
+    """Generate research with news sentiment and evidence confidence; does not save or trade."""
     report = await generate_report(symbol)
     return report.model_dump(mode='json')
 

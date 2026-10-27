@@ -36,6 +36,8 @@ async def test_report_is_persisted(prices, db_session):
     result = await service.generate_analysis('TCS')
     saved = await service.get_latest_analysis('TCS')
     assert saved.summary == result['summary']
+    assert saved.evidence == result['evidence']
+    assert saved.confidence == result['confidence']
     assert saved.strength_score == 90
 
 

@@ -67,7 +67,7 @@ async def get_news(
     symbol: str,
     db: AsyncSession = Depends(get_db)
 ) -> Any:
-    """Simulates market feed queries fetching stock-specific news."""
+    """Fetch dated company headlines from live news providers."""
     service = StockService(db)
     news = await service.get_stock_news(symbol)
     return StandardResponse(
@@ -80,9 +80,10 @@ async def get_news(
 @router.get("/sentiment/{symbol}", response_model=StandardResponse[Dict[str, Any]])
 async def get_sentiment(
     symbol: str,
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ) -> Any:
-    """Placeholder AI sentiment scanning module."""
+    """Analyze company headlines using the shared report engine."""
     service = StockService(db)
     sentiment = await service.get_stock_sentiment(symbol)
     return StandardResponse(

@@ -8,8 +8,19 @@ function getHeaders() {
   };
 }
 
+export interface ReportEvidence {
+  version?: number;
+  news?: { title: string; url: string; source: string; published_at: string; sentiment: string }[];
+  news_method?: string;
+  confidence_components?: Record<string, number>;
+  confidence_method?: string;
+  market_data_as_of?: string;
+  recommendation_method?: string;
+}
+
 export interface StockAnalysis {
   symbol: string;
+  evidence?: ReportEvidence;
   strengthScore: number;
   recommendation: string;
   trend: string;
@@ -57,7 +68,7 @@ class StockAnalysisService {
           if (dbData) {
             // Check if DB data is fresh (less than 5 minutes old)
             const dbAge = Date.now() - new Date(dbData.analysisGeneratedAt).getTime();
-            if (dbAge < this.cacheTTL) {
+            if (dbAge >= 0 && dbAge < this.cacheTTL && dbData.evidence?.version === 2) {
               this.saveToCache(cleanSymbol, dbData);
               return dbData;
             }
@@ -136,7 +147,7 @@ class StockAnalysisService {
   // --- Supabase/FastAPI CRUD Proxy ---
   
   private async loadFromDatabase(symbol: string): Promise<StockAnalysis | null> {
-    const res = await apiFetch(`${API_BASE}/api/stocks/analysis/${symbol}`, {
+    const res = await apiFetch(`${API_BASE}/api/stocks/analysis/${encodeURIComponent(symbol)}`, {
       headers: getHeaders(),
     });
     if (!res.ok) return null;
@@ -150,6 +161,7 @@ class StockAnalysisService {
   private mapResponseToModel(data: any): StockAnalysis {
     return {
       symbol: data.symbol,
+      evidence: data.evidence || {},
       strengthScore: data.strength_score,
       recommendation: data.recommendation,
       trend: data.trend,
