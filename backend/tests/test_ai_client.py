@@ -69,3 +69,18 @@ def test_card_fallback_does_not_invent_benefits():
     assert 'unavailable' in result
     assert '10%' not in result
     assert 'HSBC' not in result
+
+
+@pytest.mark.asyncio
+async def test_old_embedding_shapes_cannot_break_card_chat(db_session, monkeypatch):
+    import uuid
+    service = advisor.AdvisorService(db_session)
+    monkeypatch.setattr(settings, 'GROQ_API_KEY', 'test-only')
+    monkeypatch.setattr(service, '_load_vector_store', AsyncMock(return_value=[
+        {'text': 'groceries cashback rewards', 'vector': [1.0, 2.0]}, {'vector': [0]}, None,
+    ]))
+    completion = AsyncMock(return_value='Card context was retrieved.')
+    monkeypatch.setattr(advisor, 'complete_text', completion)
+    result = await service.chat_advisor(uuid.uuid4(), 'groceries cashback rewards', [])
+    assert result == 'Card context was retrieved.'
+    assert 'groceries cashback rewards' in completion.call_args.args[0][-1]['content']

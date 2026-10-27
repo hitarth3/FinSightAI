@@ -112,7 +112,7 @@ CATEGORY_ALIASES: Dict[str, List[str]] = {
 
 
 class LocalTFIDFEmbedder:
-    """Pure-Python TF-IDF n-gram embedder for offline fallbacks."""
+    """Deterministic normalized keyword vectors for local card-context retrieval."""
     def __init__(self):
         self.vocab = [
             "dmart", "groceries", "zomato", "swiggy", "dining", "restaurant",
@@ -952,7 +952,10 @@ class AdvisorService:
             query_vector = await self._generate_embeddings(message)
             scored = []
             for item in vector_store:
-                doc_vector = np.array(item["vector"])
+                if not isinstance(item, dict) or not isinstance(item.get("text"), str):
+                    continue
+                # Recompute older saved documents in the current embedding space.
+                doc_vector = np.array(self.local_embedder.embed_text(item["text"]))
                 q_vec = np.array(query_vector)
                 if np.linalg.norm(q_vec) > 0 and np.linalg.norm(doc_vector) > 0:
                     sim = float(np.dot(q_vec, doc_vector) / (np.linalg.norm(q_vec) * np.linalg.norm(doc_vector)))
@@ -999,16 +1002,8 @@ class AdvisorService:
     # ═══════════════════════════════════════════════════════════════
 
     async def _generate_embeddings(self, text: str) -> List[float]:
-        url = "https://api-inference.huggingface.co/models/BAAI/bge-small-en-v1.5"
-        try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                res = await client.post(url, json={"inputs": text})
-                if res.status_code == 200:
-                    vector = res.json()
-                    if isinstance(vector, list) and len(vector) > 0:
-                        return vector[0] if isinstance(vector[0], list) else vector
-        except Exception as e:
-            logger.warning(f"HuggingFace embedding failed, using TF-IDF: {e}")
+        # A single local embedding space prevents provider/fallback dimension mismatches.
+        # No account text is sent to a second embedding provider.
         return self.local_embedder.embed_text(text)
 
     async def _index_document_rag(self, user_id: uuid.UUID, text: str, doc_key: str) -> None:
@@ -1103,7 +1098,7 @@ class AdvisorService:
             symbol_clean = s.symbol.strip().upper()
             quote_data = quotes.get(s.symbol) or quotes.get(f"{symbol_clean}.NS") or {}
             purchase_price = float(s.purchase_price)
-            current_price = float(quote_data.get("current_price") or purchase_price)
+            current_price = float(quote_data.get("price") or purchase_price)
             total_purchase = s.quantity * purchase_price
             total_current = s.quantity * current_price
             gain_loss = total_current - total_purchase
@@ -1182,7 +1177,7 @@ Recent Expenses:
 
         context_str += "\n=== STOCKS ===\n"
         for stk in stocks_data:
-            context_str += f"- {stk['company_name']} ({stk['symbol']}): {stk['quantity']} shares @ ₹{stk['purchase_price']:,.2f} (Current Price: ₹{stk['current_price']:,.2f}, Value: ₹{stk['total_value']:,.2f}, Gain/Loss: ₹{stk['gain_loss']:,.2f})\n"
+            context_str += f"- {stk['company_name']} ({stk['symbol']}): {stk['quantity']} shares @ ₹{stk['purchase_price']:,.2f} (Reference price (quote or purchase-cost fallback): ₹{stk['current_price']:,.2f}, Value: ₹{stk['total_value']:,.2f}, Gain/Loss: ₹{stk['gain_loss']:,.2f})\n"
 
         context_str += "\n=== CREDIT CARDS ===\n"
         for c in cards_data:

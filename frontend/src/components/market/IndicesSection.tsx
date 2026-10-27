@@ -23,6 +23,10 @@ export const IndicesSection: React.FC<IndicesSectionProps> = ({ indices, isLoadi
   }
 
   return (
+    <section aria-label="Market indices">
+    {indices.length < 4 && <p className="module-meta mb-3" role="status">
+      {indices.length === 0 ? 'Index quotes are temporarily unavailable.' : 'Some index quotes are temporarily unavailable.'} Refresh prices to retry. Your watchlist and research remain available.
+    </p>}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {indices.map((idx) => {
         const isUp = idx.trend === 'up';
@@ -52,6 +56,7 @@ export const IndicesSection: React.FC<IndicesSectionProps> = ({ indices, isLoadi
         );
       })}
     </div>
+    </section>
   );
 };
 export default IndicesSection;

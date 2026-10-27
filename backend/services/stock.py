@@ -198,18 +198,6 @@ class StockService:
                     "changePercent": data["changePercent"],
                     "trend": "up" if data["changePercent"] >= 0 else "down"
                 })
-            else:
-                # safe local fallback metrics
-                import random
-                val = 22490 if "Nifty 50" in ind["name"] else 74110 if "Sensex" in ind["name"] else 47830 if "Bank Nifty" in ind["name"] else 36540
-                chg = round(random.uniform(-100, 100), 2)
-                result_list.append({
-                    "name": ind["name"],
-                    "value": val,
-                    "change": chg,
-                    "changePercent": round((chg / val) * 100, 2),
-                    "trend": "up" if chg >= 0 else "down"
-                })
         return result_list
 
     async def get_live_market_movers(self, force_refresh: bool = False) -> Dict[str, Any]:
