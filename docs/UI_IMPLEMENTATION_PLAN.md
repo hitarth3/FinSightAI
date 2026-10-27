@@ -63,3 +63,26 @@ will be introduced to make those features appear complete.
 ## Completion log
 
 - Plan written before application changes.
+
+- Shared layout/navigation: implemented; build passed (6c1053a).
+- Unified assistant and card tools: implemented (e922fe3); section type inference
+  corrected in 4ed074b and production build passed.
+- Task-first expenses/markets and collapsible report evidence: implemented;
+  build passed (c3fccac).
+- Typography, theme consolidation, compact expense summaries and route tests:
+  implemented; production build and 16 frontend tests passed (3477519).
+- Browser fixture: finance reply, separate card context, conversation retention
+  across unmount/remount, provider failure and retry inspected using fictional
+  responses. Desktop and 375px phone layouts inspected; mobile New chat wrapping
+  corrected. This does not constitute a new live-provider or authenticated full-app
+  end-to-end test. Backend APIs were not changed in this UI pass.
+
+## Manual assistant regression fixture
+
+Run the frontend dev server and open `/tests/assistant-preview.html`. The page
+mounts the real assistant component with fictional delayed replies. It has
+controls for theme, unmount/remount, and provider failure; no real financial data
+or network provider is used. It is not part of the production app entry bundle.
+Check New chat during a pending reply, context changes, Retry, Enter/Shift+Enter,
+and restoration after Toggle page. Real authenticated account flows still need
+an end-to-end browser check before deployment.

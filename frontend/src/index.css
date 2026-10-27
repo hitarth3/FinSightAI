@@ -603,3 +603,5 @@ button { touch-action: manipulation; }
 .metric-top, .metric-card > p, .overview-table th, .overview-table td, .transaction-name strong { font-size: 13px; }
 .transaction-name small, .category-list > div, .chart-legend, .date-pill { font-size: 12px; }
 .dashboard-main .text-xs.uppercase { text-transform: none; letter-spacing: normal; }
+.assistant-toolbar > button { flex-shrink: 0; white-space: nowrap; padding-inline: 12px; }
+.assistant-context { min-width: 0; }
