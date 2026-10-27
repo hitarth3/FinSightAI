@@ -41,7 +41,7 @@ export const CreditCardDashboard: React.FC<CreditCardDashboardProps> = ({ onBack
         </div>
       </div>
 
-      <SectionNav label="Credit card sections" value={section} onChange={setSection}
+      <SectionNav<'cards' | 'rewards' | 'compare'> label="Credit card sections" value={section} onChange={setSection}
         items={[{ value: 'cards', label: 'My cards' }, { value: 'rewards', label: 'Rewards' }, { value: 'compare', label: 'Compare' }]} />
       {section === 'cards' && <>
       {/* Aggregate metrics */}
