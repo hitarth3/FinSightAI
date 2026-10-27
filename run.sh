@@ -86,9 +86,9 @@ fi
 "$VENV_PYTHON" -m ensurepip --upgrade >/dev/null
 "$VENV_PYTHON" -m pip install -r backend/requirements.txt
 npm --prefix frontend ci
-echo "Applying database migrations. Make sure your local PostgreSQL server is running."
+echo "Applying migrations to the database configured in backend/.env."
 if ! (cd backend && PYTHONPATH=. "$VENV_PYTHON" -m alembic upgrade head); then
-    echo "Database setup failed. Check PostgreSQL and DATABASE_URL in backend/.env."
+    echo "Database setup failed. Check DATABASE_URL in backend/.env and database availability."
     exit 1
 fi
 (

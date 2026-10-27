@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 from typing import Dict, Any
 from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,7 +20,7 @@ class DashboardService:
         """Performs high-speed SQL aggregate queries directly in the database engine."""
         # 1. Fetch user income context
         user_res = await self.db.execute(select(User.monthly_income).where(User.id == user_id))
-        income = float(user_res.scalar() or 50000.00)
+        income = float(user_res.scalar() or 0.0)
 
         # 2. Optimized SQL Aggregate: Investments & Stocks (Assets)
         inv_sum_res = await self.db.execute(
@@ -54,14 +55,17 @@ class DashboardService:
         # 4. Net worth calculation
         net_worth = total_assets - total_liabilities
 
-        # 5. Monthly Expenses (filtered by current month if desired, or all recent expenses)
+        # Month-to-date recorded spending; exclude income, transfers and future entries.
+        today = date.today()
+        month_start = today.replace(day=1)
         exp_res = await self.db.execute(
             select(func.coalesce(func.sum(Expense.amount), 0.0)).where(
-                and_(Expense.user_id == user_id, Expense.nature == "EXPENSE")
+                and_(Expense.user_id == user_id, Expense.nature == "EXPENSE",
+                     Expense.expense_date >= month_start, Expense.expense_date <= today)
             )
         )
         monthly_expenses = float(exp_res.scalar() or 0.0)
-        monthly_savings = max(0.0, income - monthly_expenses)
+        monthly_savings = income - monthly_expenses
 
         # 6. Credit Utilization
         credit_utilization = 0.0
