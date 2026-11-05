@@ -9,5 +9,8 @@ RUN groupadd --gid 10001 finsight && useradd --uid 10001 --gid finsight --create
 COPY --chown=finsight:finsight . .
 RUN mkdir -p uploads/thumbnails && chown -R finsight:finsight uploads && chmod +x entrypoint.sh
 USER finsight
+# Database-free check in the final runtime image. Preserve this historical revision:
+# existing production databases already record it in alembic_version.
+RUN python -m alembic -c /app/alembic.ini show b7e204c9d613
 EXPOSE 8000
 ENTRYPOINT ["./entrypoint.sh"]
